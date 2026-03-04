@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1
+FROM golang:1.25 AS builder
+WORKDIR /src
+COPY go.sum go.mod ./
+RUN go mod download
+COPY main.go Makefile ./
+ADD .git ./.git
+ADD cmd ./cmd
+ADD pkg ./pkg
+RUN make build
+
+FROM debian:stable-slim
+RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
+  libssl-dev \
+  ca-certificates \
+  jq \
+  git \
+  curl \
+  make \
+  sudo \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && update-ca-certificates
+ARG userid=10001
+ARG groupid=10001
+RUN (getent group ${groupid} || groupadd -g ${groupid} assertoor) && \
+    useradd -m -u ${userid} -g ${groupid} assertoor
+RUN echo "assertoor ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/assertoor
+WORKDIR /app
+COPY --from=builder /src/bin/* /app/
+RUN chown -R assertoor:${groupid} /app
+RUN mkdir /workspace
+USER assertoor
+WORKDIR /workspace
+EXPOSE 8080
+ENTRYPOINT ["/app/assertoor"]

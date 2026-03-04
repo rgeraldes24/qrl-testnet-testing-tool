@@ -1,0 +1,10 @@
+.vscode
+bin
+tmp
+example/config/test.yaml
+test.yaml
+test-*.yaml
+
+.hack/devnet/generated-**
+.hack/devnet/custom-**
+CLAUDE.md

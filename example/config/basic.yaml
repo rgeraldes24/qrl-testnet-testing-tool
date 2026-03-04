@@ -1,0 +1,29 @@
+endpoints:
+  - name: "local"
+    executionUrl: http://localhost:8545
+    consensusUrl: http://localhost:5052
+
+tests:
+- name: "basic"
+  timeout: 48h
+  tasks:
+  - name: sleep
+    title: "Sleep 5 sec"
+    config:
+      duration: 5s
+  - name: run_command
+    title: "Run test command"
+    config:
+      command:
+        - echo
+        - "hi"
+  cleanupTasks:
+  - name: run_command
+    title: "Cleanup command"
+    config:
+      command:
+      - sh
+      - -c
+      - echo 'cleanup'
+      allowed_to_fail: true
+
