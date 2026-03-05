@@ -37,7 +37,7 @@ tasks:
 - name: generate_eoa_transactions
   title: "Send ${transactionCount} big calldata transactions"
   config:
-    refillMinBalance: 1000000000000000000000 # 1000 ETH
+    refillMinBalance: 1000000000000000000000 # 1000 QRL
     randomTarget: true
     amount: 0
     awaitReceipt: true

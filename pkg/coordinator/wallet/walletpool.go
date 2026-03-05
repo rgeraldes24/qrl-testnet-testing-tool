@@ -8,10 +8,10 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	"github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 //nolint:revive // ignore

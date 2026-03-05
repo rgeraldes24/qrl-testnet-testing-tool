@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/gorilla/mux"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 type GetTestRunResponse struct {

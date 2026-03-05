@@ -45,9 +45,9 @@ tasks:
   title: "Exit Validator ${validatorIndex} via EL"
   config:
     targetAddress: "0x00000961Ef480Eb55e80D19ad83579A64c007002"
-    feeCap: 50000000000 # 50 gwei
+    feeCap: 50000000000 # 50 shor
     gasLimit: 1000000
-    amount: "500000000000000000" # 0.5 ETH
+    amount: "500000000000000000" # 0.5 QRL
     failOnReject: true
   configVars:
     privateKey: "walletPrivkey"

@@ -5,7 +5,7 @@
 Assertoor provides distribution-specific executables for Windows, Linux, and macOS.
 
 1. **Download the Latest Release**:\
-   Navigate to the [Releases](https://github.com/ethpandaops/assertoor/releases) page and download the latest version suitable for your operating system.
+   Navigate to the [Releases](https://github.com/theQRL/assertoor/releases) page and download the latest version suitable for your operating system.
 
 2. **Run the Executable**:\
    After downloading, run the executable with a test configuration file. The command will be similar to the following:
@@ -21,7 +21,7 @@ If you prefer to build Assertoor from source, ensure you have [Go](https://go.de
 1. **Clone the Repository**:\
 	Use the following commands to clone the Assertoor repository and navigate to its directory:
     ```
-    git clone https://github.com/ethpandaops/assertoor.git
+    git clone https://github.com/theQRL/assertoor.git
     cd assertoor
     ```
 2. **Build the Tool**:\
@@ -40,7 +40,7 @@ If you prefer to build Assertoor from source, ensure you have [Go](https://go.de
 
 ## Use Docker Image
 
-Assertoor also offers a Docker image, which can be found at [ethpandaops/assertoor on Docker Hub](https://hub.docker.com/r/ethpandaops/assertoor).
+Assertoor also offers a Docker image, which can be found at [qrledger/assertoor on Docker Hub](https://hub.docker.com/r/qrledger/assertoor).
 
 **Available Tags**:
 
@@ -55,7 +55,7 @@ Assertoor also offers a Docker image, which can be found at [ethpandaops/asserto
 To run Assertoor in a Docker container with your test configuration, use the following command:
 
   ```
-  docker run -d --name=assertoor -v $(pwd):/config -p 8080:8080 -it ethpandaops/assertoor:latest --config=/config/test-config.yaml
+  docker run -d --name=assertoor -v $(pwd):/config -p 8080:8080 -it qrledger/assertoor:latest --config=/config/test-config.yaml
   ```
 
 * **View Logs**:\

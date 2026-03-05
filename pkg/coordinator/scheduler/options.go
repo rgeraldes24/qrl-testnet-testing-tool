@@ -3,8 +3,8 @@ package scheduler
 import (
 	"fmt"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	"gopkg.in/yaml.v3"
 )
 

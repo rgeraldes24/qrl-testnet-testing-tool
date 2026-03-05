@@ -8,10 +8,10 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/go-zond/common"
 )
 
 type ClientPool struct {

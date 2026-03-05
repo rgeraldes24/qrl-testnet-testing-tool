@@ -6,21 +6,19 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
-	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet/blobtx"
 	"github.com/holiman/uint256"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/go-zond/common/hexutil"
+	qrltypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 var (
@@ -290,8 +288,8 @@ func (t *Task) Execute(ctx context.Context) error {
 	return nil
 }
 
-func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, error) {
-	tx, err := t.wallet.BuildTransaction(ctx, func(_ context.Context, nonce uint64, _ bind.SignerFn) (*ethtypes.Transaction, error) {
+func (t *Task) generateTransaction(ctx context.Context) (*qrltypes.Transaction, error) {
+	tx, err := t.wallet.BuildTransaction(ctx, func(_ context.Context, nonce uint64, _ bind.SignerFn) (*qrltypes.Transaction, error) {
 		var toAddr *common.Address
 
 		if !t.config.ContractDeployment {
@@ -326,52 +324,21 @@ func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, 
 			txData = t.transactionData
 		}
 
-		var txObj ethtypes.TxData
+		var txObj qrltypes.TxData
 
 		switch {
-		case t.config.LegacyTxType:
-			txObj = &ethtypes.LegacyTx{
-				Nonce:    nonce,
-				GasPrice: &t.config.FeeCap.Value,
-				Gas:      t.config.GasLimit,
-				To:       toAddr,
-				Value:    txAmount,
-				Data:     txData,
-			}
-		case t.config.BlobTxType:
-			if toAddr == nil {
-				return nil, fmt.Errorf("contract deployment not supported with blob transactions")
-			}
-
-			blobData := t.config.BlobData
-			if blobData == "" {
-				blobData = "identifier"
-			}
-
-			blobHashes, blobSidecar, err := blobtx.GenerateBlobSidecar(strings.Split(blobData, ";"), 0, 0)
-			if err != nil {
-				return nil, err
-			}
-
-			txObj = &ethtypes.BlobTx{
-				Nonce:      nonce,
-				BlobFeeCap: uint256.MustFromBig(&t.config.BlobFeeCap.Value),
-				GasTipCap:  uint256.MustFromBig(&t.config.TipCap.Value),
-				GasFeeCap:  uint256.MustFromBig(&t.config.FeeCap.Value),
-				Gas:        t.config.GasLimit,
-				To:         *toAddr,
-				Value:      uint256.MustFromBig(txAmount),
-				Data:       txData,
-				BlobHashes: blobHashes,
-				Sidecar:    blobSidecar,
-			}
 		case t.config.SetCodeTxType:
-			authList := []ethtypes.SetCodeAuthorization{}
+			authList := []qrltypes.SetCodeAuthorization{}
 
 			for idx, authorization := range t.config.Authorizations {
-				authEntry := ethtypes.SetCodeAuthorization{
+				addr, err := common.NewAddressFromString(authorization.CodeAddress)
+				if err != nil {
+					return nil, err
+				}
+
+				authEntry := qrltypes.SetCodeAuthorization{
 					ChainID: *uint256.NewInt(authorization.ChainID),
-					Address: common.HexToAddress(authorization.CodeAddress),
+					Address: addr,
 				}
 
 				authWallet := t.authorizationWallets[idx]
@@ -382,7 +349,7 @@ func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, 
 					authEntry.Nonce = authWallet.UseNextNonce(true)
 				}
 
-				authEntry, err := ethtypes.SignSetCode(authWallet.GetPrivateKey(), authEntry)
+				authEntry, err := qrltypes.SignSetCode(authWallet.GetPrivateKey(), authEntry)
 				if err != nil {
 					return nil, err
 				}
@@ -390,7 +357,7 @@ func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, 
 				authList = append(authList, authEntry)
 			}
 
-			txObj = &ethtypes.SetCodeTx{
+			txObj = &qrltypes.SetCodeTx{
 				ChainID:   uint256.MustFromBig(t.ctx.Scheduler.GetServices().ClientPool().GetExecutionPool().GetBlockCache().GetChainID()),
 				Nonce:     nonce,
 				GasTipCap: uint256.MustFromBig(&t.config.TipCap.Value),
@@ -403,7 +370,7 @@ func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, 
 			}
 
 		default:
-			txObj = &ethtypes.DynamicFeeTx{
+			txObj = &qrltypes.DynamicFeeTx{
 				ChainID:   t.ctx.Scheduler.GetServices().ClientPool().GetExecutionPool().GetBlockCache().GetChainID(),
 				Nonce:     nonce,
 				GasTipCap: &t.config.TipCap.Value,
@@ -415,7 +382,7 @@ func (t *Task) generateTransaction(ctx context.Context) (*ethtypes.Transaction, 
 			}
 		}
 
-		return ethtypes.NewTx(txObj), nil
+		return qrltypes.NewTx(txObj), nil
 	})
 	if err != nil {
 		return nil, err

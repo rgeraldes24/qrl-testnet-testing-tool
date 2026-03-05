@@ -1,7 +1,7 @@
-## `check_eth_config` Task
+## `check_qrl_config` Task
 
 ### Description
-The `check_eth_config` task verifies that all execution clients in the network return consistent chain configuration via the `eth_config` JSON-RPC method as defined in EIP-7910. This task is essential for ensuring that all execution layer clients have the same fork configuration, including chain ID, fork IDs, activation times, precompiles, and system contracts. When mismatches are detected, the task provides a detailed diff showing which clients returned which configuration variants.
+The `check_qrl_config` task verifies that all execution clients in the network return consistent chain configuration via the `eth_config` JSON-RPC method as defined in EIP-7910. This task is essential for ensuring that all execution layer clients have the same fork configuration, including chain ID, fork IDs, activation times, precompiles, and system contracts. When mismatches are detected, the task provides a detailed diff showing which clients returned which configuration variants.
 
 ### Configuration Parameters
 
@@ -20,14 +20,14 @@ The `check_eth_config` task verifies that all execution clients in the network r
 ### Outputs
 
 - **`ethConfig`**:
-  The reference `eth_config` response from the first successful client query, returned as a JSON string. This output contains the complete fork configuration including current, next, and last fork details with activation times, chain ID, fork ID, blob schedule, precompiles, and system contracts.
+  The reference `eth_config` response from the first successful client query, returned as a JSON string. This output contains the complete fork configuration including current, next, and last fork details with activation times, chain ID, fork ID, precompiles, and system contracts.
 
 ### Defaults
 
-Default settings for the `check_eth_config` task:
+Default settings for the `check_qrl_config` task:
 
 ```yaml
-- name: check_eth_config
+- name: check_qrl_config
   config:
     clientPattern: ""
     excludeClientPattern: ""
@@ -40,7 +40,7 @@ Default settings for the `check_eth_config` task:
 Basic usage checking all execution clients:
 
 ```yaml
-- name: check_eth_config
+- name: check_qrl_config
   title: "Verify eth_config consistency across all EL clients"
   config:
     failOnMismatch: true
@@ -49,7 +49,7 @@ Basic usage checking all execution clients:
 Checking specific clients only:
 
 ```yaml
-- name: check_eth_config
+- name: check_qrl_config
   title: "Verify eth_config for Geth clients only"
   config:
     clientPattern: ".*geth.*"
@@ -59,7 +59,7 @@ Checking specific clients only:
 Non-blocking check that logs mismatches but doesn't fail:
 
 ```yaml
-- name: check_eth_config
+- name: check_qrl_config
   title: "Monitor eth_config consistency"
   config:
     failOnMismatch: false
@@ -68,7 +68,7 @@ Non-blocking check that logs mismatches but doesn't fail:
 Only check fully synced clients:
 
 ```yaml
-- name: check_eth_config
+- name: check_qrl_config
   title: "Verify eth_config for synced clients only"
   config:
     excludeSyncingClients: true

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sort"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/theQRL/go-zond/common"
 )
 
 type HeadFork struct {

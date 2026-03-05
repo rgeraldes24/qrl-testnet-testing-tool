@@ -53,7 +53,7 @@ tasks:
     id: specTestsWallet
     title: "Generate main wallet for tests"
     config:
-      prefundMinBalance: 1000000000000000000000000 # ensure a balance of 10000 ETH
+      prefundMinBalance: 1000000000000000000000000 # ensure a balance of 10000 QRL
     configVars:
       privateKey: "walletPrivkey"
       walletSeed: "walletSeed"
@@ -83,7 +83,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/amsterdam/eip7928_block_level_access_lists
-              seedAmount: "10000000000000000000000" # 100 ETH
+              seedAmount: "10000000000000000000000" # 100 QRL
               extraFlags: "--fork=Amsterdam -n 16"
               runSetup: false
               cleanupTestsPath: false

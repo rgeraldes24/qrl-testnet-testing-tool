@@ -22,7 +22,7 @@ tasks:
   config:
     task:
       name: generate_deposits
-      title: "Generate top up deposits with ${{depositAmount}} ETH each"
+      title: "Generate top up deposits with ${{depositAmount}} QRL each"
       config:
         limitPerSlot: 10
         limitPending: 10

@@ -4,8 +4,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
 )
 
 type LogScope struct {

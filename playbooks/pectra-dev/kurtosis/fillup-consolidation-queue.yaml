@@ -6,7 +6,7 @@ config:
   walletPrivkey: ""
   consolidationCount: 1000  # number of consolidations to send
   consolidationMaxIndex: 100 # number of wallets to send from
-  consolidationTxFee: 10000000000000000  # 0.01 ETH
+  consolidationTxFee: 10000000000000000  # 0.01 QRL
   throughputPerIndex: 20
   maxPendingPerIndex: 40
   walletSeed: ""
@@ -81,7 +81,7 @@ tasks:
             duration: 10s
 
         - name: run_task_options
-          title: "Generate ${{worker.consolidationCount}} top up consolidations with 1 ETH each"
+          title: "Generate ${{worker.consolidationCount}} top up consolidations with 1 QRL each"
           config:
             task:
               name: generate_consolidations

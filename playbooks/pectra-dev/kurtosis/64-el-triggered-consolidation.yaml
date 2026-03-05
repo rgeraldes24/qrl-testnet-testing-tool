@@ -102,20 +102,20 @@ tasks:
 
       - name: run_shell
         timeout: 5m
-        title: "Check targetValidator status: 2048 ETH (64* 32 ETH EB), 0x02 withdrawal creds"
+        title: "Check targetValidator status: 2048 QRL (64* 32 QRL EB), 0x02 withdrawal creds"
         config:
           envVars:
             validator: "tasks.target_validator_info.outputs.validator"
           command: |
             balance=$(echo "$validator" | jq -r '.balance')
             if [ "$balance" -lt 2047900000000 ]; then
-              echo "Balance too low! expected: > 2047.9 ETH, got: $balance Gwei"
+              echo "Balance too low! expected: > 2047.9 QRL, got: $balance Shor"
               exit 1
             fi
             
             effective_balance=$(echo "$validator" | jq -r '.validator.effective_balance')
             if [ "$effective_balance" != "2048000000000" ]; then
-              echo "Effective balance too low! expected: 2048 ETH, got: $effective_balance Gwei"
+              echo "Effective balance too low! expected: 2048 QRL, got: $effective_balance Shor"
               exit 1
             fi
             

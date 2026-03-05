@@ -6,12 +6,11 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/rpc"
+	qrl "github.com/theQRL/go-zond"
+	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/qrlclient"
+	"github.com/theQRL/go-zond/rpc"
 )
 
 type ExecutionClient struct {
@@ -19,7 +18,7 @@ type ExecutionClient struct {
 	endpoint         string
 	headers          map[string]string
 	rpcClient        *rpc.Client
-	ethClient        *ethclient.Client
+	qrlClient        *qrlclient.Client
 	concurrencyLimit int
 	requestTimeout   time.Duration
 	concurrencyChan  chan struct{}
@@ -41,7 +40,7 @@ func NewExecutionClient(name, url string, headers map[string]string) (*Execution
 }
 
 func (ec *ExecutionClient) Initialize(ctx context.Context) error {
-	if ec.ethClient != nil {
+	if ec.qrlClient != nil {
 		return nil
 	}
 
@@ -55,7 +54,7 @@ func (ec *ExecutionClient) Initialize(ctx context.Context) error {
 	}
 
 	ec.rpcClient = rpcClient
-	ec.ethClient = ethclient.NewClient(rpcClient)
+	ec.qrlClient = qrlclient.NewClient(rpcClient)
 
 	return nil
 }
@@ -71,8 +70,8 @@ func (ec *ExecutionClient) enforceConcurrencyLimit(ctx context.Context) func() {
 	}
 }
 
-func (ec *ExecutionClient) GetEthClient() *ethclient.Client {
-	return ec.ethClient
+func (ec *ExecutionClient) GetQRLClient() *qrlclient.Client {
+	return ec.qrlClient
 }
 
 func (ec *ExecutionClient) GetClientVersion(ctx context.Context) (string, error) {
@@ -84,7 +83,7 @@ func (ec *ExecutionClient) GetClientVersion(ctx context.Context) (string, error)
 }
 
 func (ec *ExecutionClient) GetChainSpec(ctx context.Context) (*ChainSpec, error) {
-	chainID, err := ec.ethClient.ChainID(ctx)
+	chainID, err := ec.qrlClient.ChainID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +94,7 @@ func (ec *ExecutionClient) GetChainSpec(ctx context.Context) (*ChainSpec, error)
 }
 
 func (ec *ExecutionClient) GetNodeSyncing(ctx context.Context) (*SyncStatus, error) {
-	status, err := ec.ethClient.SyncProgress(ctx)
+	status, err := ec.qrlClient.SyncProgress(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +119,7 @@ func (ec *ExecutionClient) GetLatestBlock(ctx context.Context) (*types.Block, er
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	block, err := ec.ethClient.BlockByNumber(reqCtx, nil)
+	block, err := ec.qrlClient.BlockByNumber(reqCtx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +131,7 @@ func (ec *ExecutionClient) GetBlockByHash(ctx context.Context, hash common.Hash)
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	block, err := ec.ethClient.BlockByHash(reqCtx, hash)
+	block, err := ec.qrlClient.BlockByHash(reqCtx, hash)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +150,7 @@ func (ec *ExecutionClient) GetNonceAt(ctx context.Context, wallet common.Address
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	return ec.ethClient.NonceAt(reqCtx, wallet, blockNumber)
+	return ec.qrlClient.NonceAt(reqCtx, wallet, blockNumber)
 }
 
 func (ec *ExecutionClient) GetBalanceAt(ctx context.Context, wallet common.Address, blockNumber *big.Int) (*big.Int, error) {
@@ -165,7 +164,7 @@ func (ec *ExecutionClient) GetBalanceAt(ctx context.Context, wallet common.Addre
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	return ec.ethClient.BalanceAt(reqCtx, wallet, blockNumber)
+	return ec.qrlClient.BalanceAt(reqCtx, wallet, blockNumber)
 }
 
 func (ec *ExecutionClient) GetTransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error) {
@@ -179,7 +178,7 @@ func (ec *ExecutionClient) GetTransactionReceipt(ctx context.Context, txHash com
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	return ec.ethClient.TransactionReceipt(reqCtx, txHash)
+	return ec.qrlClient.TransactionReceipt(reqCtx, txHash)
 }
 
 func (ec *ExecutionClient) GetBlockReceipts(ctx context.Context, blockHash common.Hash) ([]*types.Receipt, error) {
@@ -193,7 +192,7 @@ func (ec *ExecutionClient) GetBlockReceipts(ctx context.Context, blockHash commo
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	return ec.ethClient.BlockReceipts(reqCtx, rpc.BlockNumberOrHash{
+	return ec.qrlClient.BlockReceipts(reqCtx, rpc.BlockNumberOrHash{
 		BlockHash: &blockHash,
 	})
 }
@@ -209,10 +208,10 @@ func (ec *ExecutionClient) SendTransaction(ctx context.Context, tx *types.Transa
 	reqCtx, reqCtxCancel := context.WithTimeout(ctx, ec.requestTimeout)
 	defer reqCtxCancel()
 
-	return ec.ethClient.SendTransaction(reqCtx, tx)
+	return ec.qrlClient.SendTransaction(reqCtx, tx)
 }
 
-func (ec *ExecutionClient) GetEthCall(ctx context.Context, msg *ethereum.CallMsg, blockNumber *big.Int) ([]byte, error) {
+func (ec *ExecutionClient) GetQRLCall(ctx context.Context, msg *qrl.CallMsg, blockNumber *big.Int) ([]byte, error) {
 	closeFn := ec.enforceConcurrencyLimit(ctx)
 	if closeFn == nil {
 		return nil, fmt.Errorf("client busy")
@@ -220,5 +219,5 @@ func (ec *ExecutionClient) GetEthCall(ctx context.Context, msg *ethereum.CallMsg
 
 	defer closeFn()
 
-	return ec.ethClient.CallContract(ctx, *msg, blockNumber)
+	return ec.qrlClient.CallContract(ctx, *msg, blockNumber)
 }

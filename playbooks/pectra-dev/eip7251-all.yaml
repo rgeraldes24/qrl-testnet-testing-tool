@@ -31,7 +31,7 @@ tasks:
   title: "Generate main wallet for tests"
   config:
     walletSeed: "eip7251-all-main"
-    prefundMinBalance: 10000000000000000000000 # ensure 10000 ETH
+    prefundMinBalance: 10000000000000000000000 # ensure 10000 QRL
   configVars:
     privateKey: "walletPrivkey"
 
@@ -40,7 +40,7 @@ tasks:
   title: "Generate alternative wallet for tests"
   config:
     walletSeed: "eip7251-all-alt"
-    prefundMinBalance: 100000000000000000000 # ensure 100 ETH
+    prefundMinBalance: 100000000000000000000 # ensure 100 QRL
   configVars:
     privateKey: "walletPrivkey"
 
@@ -68,7 +68,7 @@ tasks:
     # generate 22 deposits with 0x00 withdrawal credentials
     - name: generate_deposits
       id: deposits
-      title: "Generate 22 deposits with 32 ETH each and 0x00 withdrawal credentials"
+      title: "Generate 22 deposits with 32 QRL each and 0x00 withdrawal credentials"
       config:
         limitTotal: 22
         depositAmount: 32
@@ -319,7 +319,7 @@ tasks:
           title: "Check if key 0 has received the balance"
           timeout: 30m
           config:
-            minValidatorBalance: 63900000000 # expect >63.9 ETH
+            minValidatorBalance: 63900000000 # expect >63.9 QRL
             validatorStatus:
             - active_ongoing
           configVars:
@@ -373,10 +373,10 @@ tasks:
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[2]"
 
-    # Test3: Change withdrawal credentials of a validator to 0x02, do a top up deposit of 2000ETH and consolidate another validator with 0x01 credentials into it
+    # Test3: Change withdrawal credentials of a validator to 0x02, do a top up deposit of 2000QRL and consolidate another validator with 0x01 credentials into it
     # keys: 4, 5
     - name: run_tasks
-      title: "Test3: Change withdrawal credentials of a validator to 0x02, do a top up deposit of 2000ETH and consolidate another validator with 0x01 credentials into it (balance overflowing 2048 ETH)"
+      title: "Test3: Change withdrawal credentials of a validator to 0x02, do a top up deposit of 2000QRL and consolidate another validator with 0x01 credentials into it (balance overflowing 2048 QRL)"
       config:
         tasks:
         # generate self consolidation for key 4 & wait for inclusion
@@ -446,7 +446,7 @@ tasks:
 
         # wait for deposit to be processed
         - name: check_consensus_validator_status
-          title: "Wait for key 4 balance to increase > 2031 ETH"
+          title: "Wait for key 4 balance to increase > 2031 QRL"
           timeout: 8h
           config:
             validatorStatus:
@@ -494,22 +494,22 @@ tasks:
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[5]"
 
-        # check if key 4 has max EB of 2048 ETH and excess was withdrawn
+        # check if key 4 has max EB of 2048 QRL and excess was withdrawn
         - name: check_consensus_validator_status
-          title: "Check if key 4 has max EB of 2048 ETH"
+          title: "Check if key 4 has max EB of 2048 QRL"
           timeout: 8h
           config:
             validatorStatus:
             - active_ongoing
-            minValidatorBalance: 2047100000000 # expect >2047.1 ETH
-            maxValidatorBalance: 2048100000000 # expect <2048.1 ETH
+            minValidatorBalance: 2047100000000 # expect >2047.1 QRL
+            maxValidatorBalance: 2048100000000 # expect <2048.1 QRL
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[4]"
 
-    # Test4: Change withdrawal credentials of 2 validators to 0x02, make top up deposits of 2048ETH for each, consolidate one into the other
+    # Test4: Change withdrawal credentials of 2 validators to 0x02, make top up deposits of 2048QRL for each, consolidate one into the other
     # keys: 6, 7
     - name: run_tasks
-      title: "Test4: Change withdrawal credentials of 2 validators to 0x02, make top up deposits of 2048ETH for each, consolidate one into the other (balance overflowing 2048 ETH)"
+      title: "Test4: Change withdrawal credentials of 2 validators to 0x02, make top up deposits of 2048QRL for each, consolidate one into the other (balance overflowing 2048 QRL)"
       config:
         tasks:
         # generate self consolidation for keys 6,7 & wait for inclusion
@@ -638,7 +638,7 @@ tasks:
 
         # wait for deposits to be processed
         - name: run_task_matrix
-          title: "Wait for keys 6,7 balance to increase > 2047 ETH"
+          title: "Wait for keys 6,7 balance to increase > 2047 QRL"
           timeout: 8h
           configVars:
             matrixValues: "tasks.validator_pubkeys.outputs.pubkeys[6:8]"
@@ -694,14 +694,14 @@ tasks:
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[7]"
 
-        # check if key 6 has max EB of 2048 ETH and excess was withdrawn
+        # check if key 6 has max EB of 2048 QRL and excess was withdrawn
         - name: check_consensus_validator_status
-          title: "Check if key 6 has max EB of 2048 ETH"
+          title: "Check if key 6 has max EB of 2048 QRL"
           timeout: 8h
           config:
             validatorStatus:
             - active_ongoing
-            maxValidatorBalance: 2048100000000 # expect <2048.1 ETH
+            maxValidatorBalance: 2048100000000 # expect <2048.1 QRL
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[6]"
 
@@ -907,7 +907,7 @@ tasks:
           config:
             validatorStatus:
             - active_ongoing
-            maxValidatorBalance: 32100000000 # expect <32.1 ETH
+            maxValidatorBalance: 32100000000 # expect <32.1 QRL
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[10]"
 
@@ -1195,7 +1195,7 @@ tasks:
           title: "Check if key 14 has received the full balance"
           timeout: 8h
           config:
-            minValidatorBalance: 94700000000 # expect >94.7 ETH
+            minValidatorBalance: 94700000000 # expect >94.7 QRL
             validatorStatus:
             - active_ongoing
           configVars:
@@ -1485,7 +1485,7 @@ tasks:
           title: "Check if key 19 has received the balance from key 20"
           timeout: 8h
           config:
-            minValidatorBalance: 63900000000 # expect >63.9 ETH
+            minValidatorBalance: 63900000000 # expect >63.9 QRL
             validatorStatus:
             - active_ongoing
           configVars:

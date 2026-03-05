@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 // @title Assertoor API Documentation

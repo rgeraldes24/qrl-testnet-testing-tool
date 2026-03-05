@@ -8,7 +8,7 @@ config:
   chainID: "0"
   rpcEndpoint: http://127.0.0.1:8545
   seedPrivateKey: ""
-  seedAmount: "1" # (In Wei). Amount used to seed child accounts for test execution. Can also use "1 ether" or "10000 gwei" as input
+  seedAmount: "1" # (In Planck). Amount used to seed child accounts for test execution. Can also use "1 ether" or "10000 shor" as input
   extraFlags: ""
   runSetup: true
   runTests: true

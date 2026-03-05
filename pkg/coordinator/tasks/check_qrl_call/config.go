@@ -1,7 +1,7 @@
-package checkethcall
+package checkqrlcall
 
 type Config struct {
-	EthCallData    string   `yaml:"ethCallData" json:"ethCallData"`
+	QRLCallData    string   `yaml:"ethCallData" json:"ethCallData"`
 	ExpectResult   string   `yaml:"expectResult" json:"expectResult"`
 	IgnoreResults  []string `yaml:"ignoreResults" json:"ignoreResults"`
 	CallAddress    string   `yaml:"callAddress" json:"callAddress"`
@@ -14,7 +14,7 @@ type Config struct {
 
 func DefaultConfig() Config {
 	return Config{
-		EthCallData:  "0x",
+		QRLCallData:  "0x",
 		ExpectResult: "",
 		CallAddress:  "0x0000000000000000000000000000000000000000",
 	}

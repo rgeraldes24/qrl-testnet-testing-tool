@@ -6,7 +6,7 @@ config:
   walletPrivkey: ""
   requestCount: 500  # number of requests to send
   walletCount:  1 # number of wallets to send from
-  requestFeeAmount: 10000000000000000  # 0.01 ETH
+  requestFeeAmount: 10000000000000000  # 0.01 QRL
   throughputPerWallet: 20
   maxPendingPerWallet: 40
   walletSeed: ""

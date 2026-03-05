@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 type Wallet struct {

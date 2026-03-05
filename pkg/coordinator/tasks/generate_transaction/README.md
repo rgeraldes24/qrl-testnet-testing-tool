@@ -8,17 +8,8 @@ The `generate_transaction` task creates and sends a single transaction to the ne
 - **`privateKey`**:\
   The private key used for generating the transaction.
 
-- **`legacyTxType`**:\
-  If `true`, generates a legacy (type 0) transaction. If `false`, a dynamic fee (type 2) transaction is created.
-
-- **`blobTxType`**:\
-  If `true`, generates a blob (type 3) transaction. Otherwise, a dynamic fee (type 2) transaction is used.
-
 - **`setCodeTxType`**:\
   If `true`, generates a set code (type 4) transaction. Otherwise, a dynamic fee (type 2) transaction is used.
-
-- **`blobFeeCap`**:\
-  The fee cap for blob transactions. Used only if `blobTxType` is `true`.
 
 - **`feeCap`**:\
   The maximum fee cap for the transaction.
@@ -40,9 +31,6 @@ The `generate_transaction` task creates and sends a single transaction to the ne
 
 - **`callData`**:\
   Call data included in the transaction.
-
-- **`blobData`**:\
-  Data for the blob component of the transaction. Used only if `blobTxType` is `true`.
 
 - **`authorizations`**:\
   EOA code authorizations. Used only if `setCodeTxType` is `true`.
@@ -98,10 +86,7 @@ Default settings for the `generate_transaction` task:
 - name: generate_transaction
   config:
     privateKey: ""
-    legacyTxType: false
-    blobTxType: false
     setCodeTxType: false
-    blobFeeCap: null
     feeCap: "100000000000"
     tipCap: "1000000000"
     gasLimit: 50000
@@ -109,7 +94,6 @@ Default settings for the `generate_transaction` task:
     randomTarget: false
     contractDeployment: false
     callData: ""
-    blobData: ""
     authorizations: []
     randomAmount: false
     amount: "0"

@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
 	"gopkg.in/yaml.v3"
 )
 

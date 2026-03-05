@@ -13,24 +13,24 @@ import (
 	"time"
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	ethcommon "github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/zrnt/eth2/util/hashing"
 	"github.com/protolambda/ztyp/tree"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	qrlcommon "github.com/theQRL/go-zond/common"
+	ethtypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 	"github.com/tyler-smith/go-bip39"
 	e2types "github.com/wealdtech/go-eth2-types/v2"
 	util "github.com/wealdtech/go-eth2-util"
 
-	depositcontract "github.com/ethpandaops/assertoor/pkg/coordinator/tasks/generate_deposits/deposit_contract"
+	depositcontract "github.com/theQRL/assertoor/pkg/coordinator/tasks/generate_deposits/deposit_contract"
 )
 
 var (
@@ -52,7 +52,7 @@ type Task struct {
 	nextIndex           uint64
 	lastIndex           uint64
 	walletPrivKey       *ecdsa.PrivateKey
-	depositContractAddr ethcommon.Address
+	depositContractAddr qrlcommon.Address
 }
 
 func NewTask(ctx *types.TaskContext, options *types.TaskOptions) (types.Task, error) {
@@ -107,7 +107,12 @@ func (t *Task) LoadConfig() error {
 	}
 
 	t.config = config
-	t.depositContractAddr = ethcommon.HexToAddress(config.DepositContract)
+
+	addr, err := qrlcommon.NewAddressFromString(config.DepositContract)
+	if err != nil {
+		return err
+	}
+	t.depositContractAddr = addr
 
 	return nil
 }
@@ -311,7 +316,7 @@ func (t *Task) generateDeposit(ctx context.Context, accountIdx uint64, onConfirm
 		validatorPubkey = validatorPrivkey.PublicKey().Marshal()
 		t.logger.Debugf("generated validator pubkey %v: 0x%x", validatorKeyPath, validatorPubkey)
 	} else {
-		validatorPubkey = ethcommon.FromHex(t.config.PublicKey)
+		validatorPubkey = qrlcommon.FromHex(t.config.PublicKey)
 	}
 
 	var validator *v1.Validator
@@ -337,9 +342,9 @@ func (t *Task) generateDeposit(ctx context.Context, accountIdx uint64, onConfirm
 
 	switch {
 	case t.config.WithdrawalCredentials != "":
-		withdrCreds = ethcommon.FromHex(t.config.WithdrawalCredentials)
+		withdrCreds = qrlcommon.FromHex(t.config.WithdrawalCredentials)
 	case t.config.TopUpDeposit:
-		withdrCreds = ethcommon.FromHex("0x0000000000000000000000000000000000000000000000000000000000000000")
+		withdrCreds = qrlcommon.FromHex("0x0000000000000000000000000000000000000000000000000000000000000000")
 	default:
 		withdrAccPath := fmt.Sprintf("m/12381/3600/%d/0", accountIdx)
 
@@ -359,7 +364,7 @@ func (t *Task) generateDeposit(ctx context.Context, accountIdx uint64, onConfirm
 	data := common.DepositData{
 		Pubkey:                pub,
 		WithdrawalCredentials: tree.Root(withdrCreds),
-		Amount:                common.Gwei(t.config.DepositAmount * 1000000000),
+		Amount:                common.Shor(t.config.DepositAmount * 1000000000),
 		Signature:             common.BLSSignature{},
 	}
 
@@ -404,7 +409,7 @@ func (t *Task) generateDeposit(ctx context.Context, accountIdx uint64, onConfirm
 		return nil, nil, fmt.Errorf("no ready clients available")
 	}
 
-	depositContract, err := depositcontract.NewDepositContract(t.depositContractAddr, clients[0].GetRPCClient().GetEthClient())
+	depositContract, err := depositcontract.NewDepositContract(t.depositContractAddr, clients[0].GetRPCClient().GetQRLClient())
 	if err != nil {
 		return nil, nil, fmt.Errorf("cannot create bound instance of DepositContract: %w", err)
 	}

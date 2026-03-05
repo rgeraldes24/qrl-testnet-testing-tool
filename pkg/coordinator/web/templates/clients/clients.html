@@ -50,18 +50,8 @@
                       {{ end }}
                     </td>
                     <td>
-                      {{ if eq $client.CLType 1 }}
-                        <span class="badge rounded-pill text-bg-success">Lighthouse</span>
-                      {{ else if eq $client.CLType 2 }}
-                        <span class="badge rounded-pill text-bg-success">Lodestar</span>
-                      {{ else if eq $client.CLType 3 }}
-                        <span class="badge rounded-pill text-bg-success">Nimbus</span>
-                      {{ else if eq $client.CLType 4 }}
-                        <span class="badge rounded-pill text-bg-success">Prysm</span>
-                      {{ else if eq $client.CLType 5 }}
-                        <span class="badge rounded-pill text-bg-success">Teku</span>
-                      {{ else if eq $client.CLType 6 }}
-                        <span class="badge rounded-pill text-bg-success">Grandine</span>
+                      {{ if eq $client.CLType 4 }}
+                        <span class="badge rounded-pill text-bg-success">Qrysm</span>
                       {{ else }}
                         <span class="badge rounded-pill text-bg-secondary">Unknown</span>
                       {{ end }}
@@ -98,18 +88,8 @@
                       {{ end }}
                     </td>
                     <td>
-                      {{ if eq $client.ELType 1 }}
-                        <span class="badge rounded-pill text-bg-success">Besu</span>
-                      {{ else if eq $client.ELType 2 }}
-                        <span class="badge rounded-pill text-bg-success">Erigon</span>
-                      {{ else if eq $client.ELType 3 }}
-                        <span class="badge rounded-pill text-bg-success">EthereumJS</span>
-                      {{ else if eq $client.ELType 4 }}
-                        <span class="badge rounded-pill text-bg-success">Geth</span>
-                      {{ else if eq $client.ELType 5 }}
-                        <span class="badge rounded-pill text-bg-success">Nethermind</span>
-                      {{ else if eq $client.ELType 6 }}
-                        <span class="badge rounded-pill text-bg-success">Reth</span>
+                      {{ if eq $client.ELType 4 }}
+                        <span class="badge rounded-pill text-bg-success">Gzond</span>
                       {{ else }}
                         <span class="badge rounded-pill text-bg-secondary">Unknown</span>
                       {{ end }}

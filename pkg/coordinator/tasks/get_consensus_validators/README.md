@@ -13,8 +13,8 @@ This task retrieves validators from the consensus layer that match specified fil
   - Possible values: `pending_initialized`, `pending_queued`, `active_ongoing`, `active_exiting`, `active_slashed`, `exited_unslashed`, `exited_slashed`, `withdrawal_possible`, `withdrawal_done`
 
 ### Balance Filtering
-- **`minValidatorBalance`** *(uint64)*: Minimum validator balance in Gwei
-- **`maxValidatorBalance`** *(uint64)*: Maximum validator balance in Gwei
+- **`minValidatorBalance`** *(uint64)*: Minimum validator balance in Shor
+- **`maxValidatorBalance`** *(uint64)*: Maximum validator balance in Shor
 
 ### Index Filtering
 - **`minValidatorIndex`** *(uint64)*: Minimum validator index
@@ -38,9 +38,9 @@ Depending on `outputFormat`, the task exports:
 Each validator object includes:
 - `index`: Validator index
 - `pubkey`: Validator public key (0x prefixed hex)
-- `balance`: Current balance in Gwei
+- `balance`: Current balance in Shor
 - `status`: Validator status string
-- `effectiveBalance`: Effective balance in Gwei
+- `effectiveBalance`: Effective balance in Shor
 - `withdrawalCredentials`: Withdrawal credentials (0x prefixed hex)
 - `activationEpoch`: Activation epoch
 - `exitEpoch`: Exit epoch
@@ -85,7 +85,7 @@ Each validator object includes:
 - name: find_rich_validators
   task: get_consensus_validators
   config:
-    clientPattern: "prysm.*"
+    clientPattern: "qrysm.*"
     minValidatorBalance: 40000000000  # > 40 ETH
     validatorStatus: ["active_ongoing"]
     maxResults: 20

@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/web/api"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/web/api"
 )
 
 type TestRunPage struct {

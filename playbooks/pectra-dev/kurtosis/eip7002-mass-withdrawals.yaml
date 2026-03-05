@@ -44,7 +44,7 @@ tasks:
       title: "Send 100 EL triggered withdrawal transactions for key 0"
       config:
         limitTotal: 100
-        withdrawAmount: 1 # 1 ETH
+        withdrawAmount: 1 # 1 QRL
         awaitReceipt: true
         failOnReject: true
       configVars:

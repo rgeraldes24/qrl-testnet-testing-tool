@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/tasks"
 	"github.com/spf13/cobra"
+	"github.com/theQRL/assertoor/pkg/coordinator/tasks"
 	"gopkg.in/yaml.v3"
 )
 

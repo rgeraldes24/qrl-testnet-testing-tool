@@ -177,7 +177,7 @@ tasks:
                 stopChildOnResult: false
                 tasks:
                 - name: generate_deposits
-                  title: "Top-up deposit ${depositAmount} ETH to validator ${{validator.index}}"
+                  title: "Top-up deposit ${depositAmount} QRL to validator ${{validator.index}}"
                   config:
                     limitTotal: 1
                     awaitReceipt: true

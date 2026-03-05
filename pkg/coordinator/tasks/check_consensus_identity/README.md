@@ -1,6 +1,6 @@
 # `check_consensus_identity` Task
 
-This task checks consensus client node identity information by querying the `/eth/v1/node/identity` API endpoint. It can verify various aspects of the node identity including CGC (Custody Group Count) extracted from ENR (Ethereum Node Record).
+This task checks consensus client node identity information by querying the `/eth/v1/node/identity` API endpoint. It can verify various aspects of the node identity including CGC (Custody Group Count) extracted from QNR (QRL Node Record).
 
 ## Configuration
 
@@ -18,8 +18,8 @@ This task checks consensus client node identity information by querying the `/et
 - **`minCgc`** *(int)*: Minimum CGC value required
 - **`maxCgc`** *(int)*: Maximum CGC value allowed
 
-### ENR Checks
-- **`expectEnrField`** *(map[string]interface{})*: Expected ENR field values
+### QNR Checks
+- **`expectQnrField`** *(map[string]interface{})*: Expected QNR field values
 
 ### PeerID Checks
 - **`expectPeerIdPattern`** *(string)*: Regex pattern that PeerID must match
@@ -45,14 +45,14 @@ The task exports the following data via `ctx.Outputs`:
 Each client result includes:
 - `clientName`: Name of the consensus client
 - `peerId`: Peer ID from node identity
-- `enr`: ENR string
+- `qnr`: QNR string
 - `p2pAddresses`: Array of P2P addresses
 - `discoveryAddresses`: Array of discovery addresses
 - `seqNumber`: Metadata sequence number
 - `attnets`: Attestation subnets
 - `syncnets`: Sync subnets
 - `cgc`: Extracted Custody Group Count
-- `enrFields`: Parsed ENR fields
+- `qnrFields`: Parsed QNR fields
 - `checksPassed`: Whether all configured checks passed
 - `failureReasons`: Array of reasons why checks failed (if any)
 
@@ -82,7 +82,7 @@ Each client result includes:
 - name: full_identity_check
   task: check_consensus_identity
   config:
-    clientPattern: "prysm-*"
+    clientPattern: "qrysm-*"
     minCgc: 4
     maxCgc: 16
     expectP2pAddressCount: 2

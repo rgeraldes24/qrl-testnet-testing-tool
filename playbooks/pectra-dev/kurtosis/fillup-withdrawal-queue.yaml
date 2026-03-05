@@ -6,13 +6,13 @@ config:
   walletPrivkey: ""
   withdrawalCount: 1000  # number of withdrawals to send
   withdrawalMaxIndex: 100 # number of wallets to send from
-  withdrawalTxFee: 10000000000000000  # 0.01 ETH
+  withdrawalTxFee: 10000000000000000  # 0.01 QRL
   throughputPerIndex: 20
   maxPendingPerIndex: 40
   walletSeed: ""
   sourceStartValidatorIndex: 0
   sourceValidatorCount: 0
-  withdrawAmount: 1 # 1 wei
+  withdrawAmount: 1 # 1 shor
 tasks:
 - name: check_clients_are_healthy
   title: "Check if at least one client is ready"
@@ -81,7 +81,7 @@ tasks:
             duration: 10s
 
         - name: run_task_options
-          title: "Generate ${{worker.withdrawalCount}} top up withdrawals with 1 ETH each"
+          title: "Generate ${{worker.withdrawalCount}} top up withdrawals with 1 QRL each"
           config:
             task:
               name: generate_withdrawal_requests

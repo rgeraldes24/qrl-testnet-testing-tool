@@ -39,9 +39,6 @@ The task is intended for mass transaction generation.
 - **`refillMinBalance`**:\
   The minimum balance required before triggering a refill.
 
-- **`legacyTxType`**:\
-  Determines whether to use the legacy type for transactions.
-
 - **`feeCap`**:\
   The maximum fee cap for transactions.
 
@@ -67,7 +64,7 @@ The task is intended for mass transaction generation.
   If true, the transaction amount is randomized.
 
 - **`amount`**:\
-  The amount of ETH (in wei) to be sent in each transaction.
+  The amount of ETH (in planck) to be sent in each transaction.
 
 - **`awaitReceipt`**:\
   If `false`, the task succeeds immediately after sending the transactions without waiting for the receipts. If `true`, it waits for all receipts.
@@ -103,7 +100,6 @@ Default settings for the `generate_eoa_transactions` task:
     refillTipCap: "1000000000"
     refillAmount: "1000000000000000000"
     refillMinBalance: "500000000000000000"
-    legacyTxType: false
     feeCap: "100000000000"
     tipCap: "1000000000"
     gasLimit: 50000

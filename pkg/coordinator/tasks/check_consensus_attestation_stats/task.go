@@ -8,10 +8,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/go-bitfield"
 )
 
 var (

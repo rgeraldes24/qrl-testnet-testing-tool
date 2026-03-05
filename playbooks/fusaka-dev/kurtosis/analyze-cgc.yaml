@@ -90,23 +90,23 @@ tasks:
                 echo "::set-out-json client_name \"$client_name\""
                 echo "::set-out-json current_cgc $current_cgc"
                 echo "::set-out-json validator_count 0"
-                echo "::set-out-json total_effective_balance_eth 0"
+                echo "::set-out-json total_effective_balance_qrl 0"
                 echo "::set-out-json required_cgc 0"
                 echo "::set-out-json cgc_sufficient true"
                 exit 0
               fi
               
-              # Sum effective balances (in gwei)
-              total_balance_gwei=$(echo "$validators" | jq -r '[.[].effectiveBalance] | add')
+              # Sum effective balances (in shor)
+              total_balance_shor=$(echo "$validators" | jq -r '[.[].effectiveBalance] | add')
               
-              # Convert to ETH (1 ETH = 1e9 gwei)
-              total_balance_eth=$(echo "scale=6; $total_balance_gwei / 1000000000" | bc -l)
+              # Convert to QRL (1 QRL = 1e9 shor)
+              total_balance_qrl=$(echo "scale=6; $total_balance_shor / 1000000000" | bc -l)
               
-              echo "Total effective balance: ${total_balance_eth} ETH"
+              echo "Total effective balance: ${total_balance_qrl} QRL"
               
-              # Calculate required CGC: ceil(total_balance_eth / 32)
+              # Calculate required CGC: ceil(total_balance_qrl / 32)
               # Using bc for floating point math
-              required_cgc=$(echo "scale=0; ($total_balance_gwei + 31999999999) / 32000000000" | bc -l)
+              required_cgc=$(echo "scale=0; ($total_balance_shor + 31999999999) / 32000000000" | bc -l)
               
               echo "Required CGC (minimum): $required_cgc"
               echo "Current CGC: $current_cgc"
@@ -129,8 +129,8 @@ tasks:
               echo "::set-out-json client_name \"$client_name\""
               echo "::set-out-json current_cgc $current_cgc"
               echo "::set-out-json validator_count $validator_count"
-              echo "::set-out-json total_effective_balance_eth $total_balance_eth"
-              echo "::set-out-json total_effective_balance_gwei $total_balance_gwei"
+              echo "::set-out-json total_effective_balance_qrl $total_balance_qrl"
+              echo "::set-out-json total_effective_balance_shor $total_balance_shor"
               echo "::set-out-json required_cgc $required_cgc"
               echo "::set-out-json cgc_sufficient $cgc_sufficient"
               
@@ -178,14 +178,14 @@ tasks:
               analyzed_count=$((analyzed_count + 1))
               current_cgc=$(echo "$result" | jq -r '.current_cgc')
               validator_count=$(echo "$result" | jq -r '.validator_count')
-              balance_eth=$(echo "$result" | jq -r '.total_effective_balance_eth')
-              balance_gwei=$(echo "$result" | jq -r '.total_effective_balance_gwei')
+              balance_qrl=$(echo "$result" | jq -r '.total_effective_balance_qrl')
+              balance_shor=$(echo "$result" | jq -r '.total_effective_balance_shor')
               required_cgc=$(echo "$result" | jq -r '.required_cgc')
               cgc_sufficient=$(echo "$result" | jq -r '.cgc_sufficient')
               
               echo "📊 Client: $client_name"
               echo "   Validators: $validator_count"
-              echo "   Total Balance: ${balance_eth} ETH"
+              echo "   Total Balance: ${balance_qrl} QRL"
               echo "   Current CGC: $current_cgc"
               echo "   Required CGC: $required_cgc"
               
@@ -198,8 +198,8 @@ tasks:
                 insufficient_count=$((insufficient_count + 1))
               fi
               
-              # Add to totals (using integer math for gwei)
-              total_balance_sum=$((total_balance_sum + balance_gwei))
+              # Add to totals (using integer math for shor)
+              total_balance_sum=$((total_balance_sum + balance_shor))
               total_validator_count=$((total_validator_count + validator_count))
               ;;
             "no_clients")
@@ -230,11 +230,11 @@ tasks:
       echo ""
       
       if [ "$total_validator_count" -gt 0 ]; then
-        # Convert total balance back to ETH for display
-        total_balance_eth=$(echo "scale=6; $total_balance_sum / 1000000000" | bc -l)
+        # Convert total balance back to QRL for display
+        total_balance_qrl=$(echo "scale=6; $total_balance_sum / 1000000000" | bc -l)
         echo "Network totals:"
         echo "  Total validators: $total_validator_count"
-        echo "  Total effective balance: ${total_balance_eth} ETH"
+        echo "  Total effective balance: ${total_balance_qrl} QRL"
         
         # Calculate network-wide required CGC
         network_required_cgc=$(echo "scale=0; ($total_balance_sum + 31999999999) / 32000000000" | bc -l)

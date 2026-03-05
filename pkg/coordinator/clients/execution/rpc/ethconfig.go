@@ -15,7 +15,6 @@ type EthConfigResponse struct {
 // ForkConfig represents a fork configuration
 type ForkConfig struct {
 	ActivationTime  int64                  `json:"activationTime"`
-	BlobSchedule    map[string]interface{} `json:"blobSchedule,omitempty"`
 	ChainID         string                 `json:"chainId"`
 	ForkID          string                 `json:"forkId"`
 	Precompiles     map[string]interface{} `json:"precompiles,omitempty"`

@@ -44,9 +44,6 @@ The `check_consensus_block_proposals` task assesses consensus block proposals ag
 - **`minTransactionCount`**:\
   The minimum number of transactions (of any type) required in the block.
 
-- **`minBlobCount`**:\
-  The minimum number of blob sidecars that must be included in the block.
-
 - **`minDepositRequestCount`**:\
   The minimum number of deposit request operations needed in the block.
 
@@ -106,7 +103,6 @@ Default settings for the `check_consensus_block_proposals` task:
     minBlsChangeCount: 0
     minWithdrawalCount: 0
     minTransactionCount: 0
-    minBlobCount: 0
     minDepositRequestCount: 0
     minWithdrawalRequestCount: 0
     minConsolidationRequestCount: 0

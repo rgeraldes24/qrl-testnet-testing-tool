@@ -31,7 +31,7 @@ tasks:
         echo $hexval
         # Set the eip2935input variable
         echo "::set-var eip2935input $hexval"
-  - name: check_eth_call
+  - name: check_qrl_call
     title: "Check EIP-2935 contract result"
     timeout: 5m
     config:
@@ -40,5 +40,5 @@ tasks:
         - "0x0000000000000000000000000000000000000000000000000000000000000000"
       failOnMismatch: true
     configVars:
-      ethCallData: "eip2935input"
+      qrlCallData: "eip2935input"
       expectResult: "headBlockHash"

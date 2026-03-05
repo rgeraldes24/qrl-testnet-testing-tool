@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/names"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/test"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	web_types "github.com/ethpandaops/assertoor/pkg/coordinator/web/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/names"
+	"github.com/theQRL/assertoor/pkg/coordinator/test"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	web_types "github.com/theQRL/assertoor/pkg/coordinator/web/types"
 	"gopkg.in/yaml.v3"
 )
 

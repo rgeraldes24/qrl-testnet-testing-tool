@@ -53,7 +53,7 @@ tasks:
     id: specTestsWallet
     title: "Generate main wallet for tests"
     config:
-      prefundMinBalance: 10000000000000000000000 # ensure a balance of 10000 ETH
+      prefundMinBalance: 10000000000000000000000 # ensure a balance of 10000 QRL
     configVars:
       privateKey: "walletPrivkey"
       walletSeed: "walletSeed"
@@ -84,7 +84,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/prague/eip2537_bls_12_381_precompiles
-              seedAmount: "100000000000000000000" # 100 ETH
+              seedAmount: "100000000000000000000" # 100 QRL
               extraFlags: "--fork=Prague -n 16"
               runSetup: false
               cleanupTestsPath: false
@@ -103,7 +103,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/prague/eip7002_el_triggerable_withdrawals
-              seedAmount: "100000000000000000000" # 100 ETH
+              seedAmount: "100000000000000000000" # 100 QRL
               extraFlags: "--fork=Prague -n 16"
               runSetup: false
               cleanupTestsPath: false
@@ -122,7 +122,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/prague/eip7251_consolidations
-              seedAmount: "100000000000000000000" # 100 ETH
+              seedAmount: "100000000000000000000" # 100 QRL
               extraFlags: "--fork=Prague -n 16"
               runSetup: false
               cleanupTestsPath: false
@@ -141,7 +141,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/prague/eip7623_increase_calldata_cost
-              seedAmount: "100000000000000000000" # 100 ETH
+              seedAmount: "100000000000000000000" # 100 QRL
               extraFlags: "--fork=Prague -n 16"
               runSetup: false
               cleanupTestsPath: false
@@ -160,7 +160,7 @@ tasks:
             testConfig:
               gitRepo: https://github.com/ethereum/execution-specs.git
               testPath: ./tests/prague/eip7702_set_code_tx
-              seedAmount: "100000000000000000000" # 100 ETH
+              seedAmount: "100000000000000000000" # 100 QRL
               extraFlags: "--fork=Prague -n 16"
               runSetup: false
               cleanupTestsPath: false

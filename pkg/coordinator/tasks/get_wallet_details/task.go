@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 var (
@@ -85,7 +85,11 @@ func (t *Task) Execute(ctx context.Context) error {
 			return fmt.Errorf("cannot initialize wallet: %w", err)
 		}
 	} else {
-		address := common.HexToAddress(t.config.Address)
+		address, err := common.NewAddressFromString(t.config.Address)
+		if err != nil {
+			return err
+		}
+
 		wal = t.ctx.Scheduler.GetServices().WalletManager().GetWalletByAddress(address)
 	}
 

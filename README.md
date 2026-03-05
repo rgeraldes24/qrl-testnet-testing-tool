@@ -1,12 +1,11 @@
-<img align="left" src="./.github/resources/assertoor.png" width="60">
-<h1>Assertoor: Ethereum Testnet Testing Tool</h1>
+<h1>Assertoor: QRL Testnet Testing Tool</h1>
 
 ## Overview
-Assertoor is a robust and versatile tool designed for comprehensive testing of the Ethereum network. It orchestrates a series of tests from a YAML file, with each test comprising a sequence of tasks executed in a defined order to assess various aspects of the Ethereum network.
+Assertoor is a robust and versatile tool designed for comprehensive testing of the QRL network. It orchestrates a series of tests from a YAML file, with each test comprising a sequence of tasks executed in a defined order to assess various aspects of the QRL network.
 
 ## Key Features
 
-- **Connection to Ethereum Clients**:\
+- **Connection to QRL Clients**:\
   Assertoor connects to multiple Consensus and Execution Clients via their HTTP RPC API, ensuring compatibility with all clients and providing a resilient view of the network status.
 
 - **YAML-Based Test & Task Definition**:\
@@ -19,7 +18,6 @@ Assertoor is a robust and versatile tool designed for comprehensive testing of t
   Includes tasks ranging from simple shell scripts to complex built-in logic, such as:
     - **Generating Transactions**: Simulating transaction types to test network response and throughput.
     - **Generating Deposits & Exits**: Evaluating network handling of deposit and exit transactions.
-    - **Generating BLS Changes**: Testing network capability to process BLS signature changes.
     - **Checking Network Stability**: Assessing network resilience under various conditions.
     - **Checking Forks & Reorgs**: Analyzing network behavior during forks and reorganizations.
     - **Checking Block Properties**: Testing for specific block properties.
@@ -31,18 +29,18 @@ Assertoor is a robust and versatile tool designed for comprehensive testing of t
 - **Web API**:\
   An API interface provides real-time test and task status, logs, and results for easy programmatic access. \
   This feature enables simple integration with other systems and facilitates automated monitoring and analysis workflows.\
-  eg. for running [scheduled tests with github workflows](https://github.com/ethpandaops/assertoor-test)
+  eg. for running [scheduled tests with github workflows](https://github.com/theQRL/assertoor-test)
 
 ## Getting Started
 
 1. **Clone the repository & build the tool**:
     ```
-    git clone https://github.com/ethpandaops/assertoor.git
+    git clone https://github.com/theQRL/assertoor.git
     cd assertoor
     make build
     ```
 2. **Configure Your Tests**:\
-   Prepare tests in a YAML file. See example configurations [here](https://github.com/ethpandaops/assertoor/tree/master/example/config). \
+   Prepare tests in a YAML file. See example configurations [here](https://github.com/theQRL/assertoor/tree/master/example/config). \
   Provide RPC URLs for at least one Client Pair (consensus & execution).
 3. **Run Assertoor**:\
    Launch the tool to execute defined tests.
@@ -54,8 +52,8 @@ Assertoor is a robust and versatile tool designed for comprehensive testing of t
 
 ## Documentation and Examples
 
-Refer to our [documentation](https://github.com/ethpandaops/assertoor/wiki) for installation, configuration, and usage guidelines. \
-Example tests are available [here](https://github.com/ethpandaops/assertoor/tree/master/playbooks).
+Refer to our [documentation](https://github.com/theQRL/assertoor/wiki) for installation, configuration, and usage guidelines. \
+Example tests are available [here](https://github.com/theQRL/assertoor/tree/master/playbooks).
 
 ## Contributing
 

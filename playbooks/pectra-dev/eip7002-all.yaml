@@ -59,14 +59,14 @@ tasks:
       title: "Generate wallet for new deposits"
       config:
         walletSeed: "eip7002-all"
-        prefundMinBalance: 1601000000000000000000 # ensure 1601 ETH
+        prefundMinBalance: 1601000000000000000000 # ensure 1601 QRL
       configVars:
         privateKey: "walletPrivkey"
 
     # generate deposits
     - name: generate_deposits
       id: new_deposits
-      title: "Generate 10 deposits with 32 ETH each and 0x00 withdrawal credentials"
+      title: "Generate 10 deposits with 32 QRL each and 0x00 withdrawal credentials"
       config:
         limitTotal: 10
         depositAmount: 32
@@ -149,7 +149,7 @@ tasks:
               title: "Send EL triggered exit transaction for key 0"
               config:
                 limitTotal: 1
-                withdrawAmount: 0 # 0 ETH
+                withdrawAmount: 0 # 0 QRL
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -218,7 +218,7 @@ tasks:
               title: "Send EL triggered exit transaction for key 1"
               config:
                 limitTotal: 1
-                withdrawAmount: 0 # 0 ETH - exit
+                withdrawAmount: 0 # 0 QRL - exit
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -338,7 +338,7 @@ tasks:
               title: "Send EL triggered exit transaction for key 2"
               config:
                 limitTotal: 1
-                withdrawAmount: 0 # 0 ETH - exit
+                withdrawAmount: 0 # 0 QRL - exit
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -363,10 +363,10 @@ tasks:
           configVars:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[2]"
 
-    # Test4: Submit a partial 1 ETH withdrawal request from an address with 0x01 credentials, assert no withdrawal
+    # Test4: Submit a partial 1 QRL withdrawal request from an address with 0x01 credentials, assert no withdrawal
     # keys: 3
     - name: run_tasks
-      title: "Test4: Submit a partial 1 ETH withdrawal request from an address with 0x01 credentials, assert no withdrawal"
+      title: "Test4: Submit a partial 1 QRL withdrawal request from an address with 0x01 credentials, assert no withdrawal"
       config:
         tasks:
         # generate BLS change & wait for inclusion
@@ -393,9 +393,9 @@ tasks:
               configVars:
                 expectBlsChanges: "| [{publicKey: .tasks.validator_pubkeys.outputs.pubkeys[3], address: .tasks.wallet_details.outputs.address}]"
 
-        # wait for balance to be <= 32ETH (await withdrawal after bls change)
+        # wait for balance to be <= 32QRL (await withdrawal after bls change)
         - name: check_consensus_validator_status
-          title: "Wait for key 3 balance to be <= 32.01 ETH"
+          title: "Wait for key 3 balance to be <= 32.01 QRL"
           id: key3_status
           timeout: 30m
           config:
@@ -416,7 +416,7 @@ tasks:
               title: "Send EL triggered withdrawal transaction for key 3"
               config:
                 limitTotal: 1
-                withdrawAmount: 1000000000 # 1 ETH
+                withdrawAmount: 1000000000 # 1 QRL
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -430,14 +430,14 @@ tasks:
               configVars:
                 expectWithdrawalRequests: "| [{validatorPubkey: .tasks.validator_pubkeys.outputs.pubkeys[3], sourceAddress: .tasks.wallet_details.outputs.address, amount: 1000000000}]"
 
-        # check chain for 30 minutes, expect no withdrawal with >= 0.1 ETH for key 3
+        # check chain for 30 minutes, expect no withdrawal with >= 0.1 QRL for key 3
         - name: run_task_options
-          title: "Monitor chain for 30min, expect no withdrawal with >= 0.1 ETH for key 3"
+          title: "Monitor chain for 30min, expect no withdrawal with >= 0.1 QRL for key 3"
           config:
             expectFailure: true
             task:
               name: check_consensus_block_proposals
-              title: "Check for >= 0.1 ETH withdrawal for key 3 (expect failure)"
+              title: "Check for >= 0.1 QRL withdrawal for key 3 (expect failure)"
               timeout: 30m
               config:
                 minWithdrawalCount: 1
@@ -445,10 +445,10 @@ tasks:
               configVars:
                 expectWithdrawals: "| [{publicKey: .tasks.validator_pubkeys.outputs.pubkeys[3], address: .tasks.wallet_details.outputs.address, minAmount: 100000000}]"
 
-    # Test5: Submit a partial 1 ETH withdrawal request from an address with 0x02 credentials and balance >= 33 ETH, assert withdrawal
+    # Test5: Submit a partial 1 QRL withdrawal request from an address with 0x02 credentials and balance >= 33 QRL, assert withdrawal
     # keys: 4
     - name: run_tasks
-      title: "Test5: Submit a partial 1 ETH withdrawal request from an address with 0x02 credentials and balance >= 33 ETH, assert withdrawal"
+      title: "Test5: Submit a partial 1 QRL withdrawal request from an address with 0x02 credentials and balance >= 33 QRL, assert withdrawal"
       config:
         tasks:
         # generate BLS change & wait for inclusion
@@ -503,7 +503,7 @@ tasks:
               configVars:
                 expectConsolidationRequests: "| [{sourceAddress: .tasks.wallet_details.outputs.address, sourcePubkey: .tasks.validator_pubkeys.outputs.pubkeys[4]}]"
 
-        # generate top-up deposit for key 4 (add 2 ETH) & wait for inclusion
+        # generate top-up deposit for key 4 (add 2 QRL) & wait for inclusion
         - name: run_task_background
           title: "Generate top-up deposit for key 4 & track inclusion"
           timeout: 10m
@@ -533,7 +533,7 @@ tasks:
 
         # wait for topup deposit to be processed
         - name: check_consensus_validator_status
-          title: "Wait for key 4 balance to increase > 33 ETH"
+          title: "Wait for key 4 balance to increase > 33 QRL"
           id: key4_status
           timeout: 4h
           config:
@@ -555,13 +555,13 @@ tasks:
               echo "Balance: $balance"
 
               if [ "$balance" -lt 33000000000 ]; then
-                echo "Balance too low! expected: >= 33 ETH, got: $balance Gwei"
+                echo "Balance too low! expected: >= 33 QRL, got: $balance Shor"
                 exit 1
               fi
 
               effective_balance=$(echo "$validator" | jq -r '.validator.effective_balance')
               if [ "$effective_balance" -lt "33000000000" ]; then
-                echo "Effective balance too low! expected: >= 33 ETH, got: $effective_balance Gwei"
+                echo "Effective balance too low! expected: >= 33 QRL, got: $effective_balance Shor"
                 exit 1
               fi
 
@@ -584,7 +584,7 @@ tasks:
               title: "Send EL triggered withdrawal transaction for key 4"
               config:
                 limitTotal: 1
-                withdrawAmount: 1000000000 # 1 ETH
+                withdrawAmount: 1000000000 # 1 QRL
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -600,7 +600,7 @@ tasks:
 
         # wait for withdrawal to be processed
         - name: check_consensus_block_proposals
-          title: "Check for exact 1 ETH withdrawal for key 4"
+          title: "Check for exact 1 QRL withdrawal for key 4"
           timeout: 2h
           config:
             minWithdrawalCount: 1
@@ -608,10 +608,10 @@ tasks:
             expectWithdrawals: "| [{publicKey: .tasks.validator_pubkeys.outputs.pubkeys[4], address: .tasks.wallet_details.outputs.address, minAmount: 1000000000, maxAmount: 1000000000}]"
 
 
-    # Test6: Submit a partial 2 ETH withdrawal request from an address with 0x02 credentials and balance < 34 ETH, assert < 2 ETH withdrawal
+    # Test6: Submit a partial 2 QRL withdrawal request from an address with 0x02 credentials and balance < 34 QRL, assert < 2 QRL withdrawal
     # keys: 5
     - name: run_tasks
-      title: "Test6: Submit a partial 1 ETH withdrawal request from an address with 0x02 credentials and balance < 34 ETH, assert < 2 ETH withdrawal"
+      title: "Test6: Submit a partial 1 QRL withdrawal request from an address with 0x02 credentials and balance < 34 QRL, assert < 2 QRL withdrawal"
       config:
         tasks:
         # generate BLS changes & wait for inclusion
@@ -666,7 +666,7 @@ tasks:
               configVars:
                 expectConsolidationRequests: "| [{sourceAddress: .tasks.wallet_details.outputs.address, sourcePubkey: .tasks.validator_pubkeys.outputs.pubkeys[5]}]"
 
-        # generate top-up deposit for key 5 (add 1 ETH) & wait for inclusion
+        # generate top-up deposit for key 5 (add 1 QRL) & wait for inclusion
         - name: run_task_background
           title: "Generate top-up deposit for key 5 & track inclusion"
           timeout: 10m
@@ -716,13 +716,13 @@ tasks:
               echo "Balance: $balance"
 
               if [ "$balance" -gt 33500000000 ]; then
-                echo "Balance too high! expected: <= 33.5 ETH, got: $balance Gwei"
+                echo "Balance too high! expected: <= 33.5 QRL, got: $balance Shor"
                 exit 1
               fi
 
               effective_balance=$(echo "$validator" | jq -r '.validator.effective_balance')
               if [ "$effective_balance" -gt "33000000000" ]; then
-                echo "Effective balance too high! expected: <= 33 ETH, got: $effective_balance Gwei"
+                echo "Effective balance too high! expected: <= 33 QRL, got: $effective_balance Shor"
                 exit 1
               fi
 
@@ -745,7 +745,7 @@ tasks:
               title: "Send EL triggered withdrawal transaction for key 5"
               config:
                 limitTotal: 1
-                withdrawAmount: 2000000000 # 2 ETH
+                withdrawAmount: 2000000000 # 2 QRL
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -759,9 +759,9 @@ tasks:
               configVars:
                 expectWithdrawalRequests: "| [{validatorPubkey: .tasks.validator_pubkeys.outputs.pubkeys[5], sourceAddress: .tasks.wallet_details.outputs.address, amount: 2000000000}]"
 
-        # check chain for 30 minutes, expect withdrawal with >= 0.5 ETH & < 1.5 ETH for key 5
+        # check chain for 30 minutes, expect withdrawal with >= 0.5 QRL & < 1.5 QRL for key 5
         - name: check_consensus_block_proposals
-          title: "Check withdrawal for key 5 (expect in range 0.5-1.5 ETH)"
+          title: "Check withdrawal for key 5 (expect in range 0.5-1.5 QRL)"
           timeout: 2h
           id: key5_withdrawal
           config:
@@ -948,7 +948,7 @@ tasks:
 
         # wait for topup deposit to be processed
         - name: check_consensus_validator_status
-          title: "Wait for key 6 balance to increase > 41 ETH"
+          title: "Wait for key 6 balance to increase > 41 QRL"
           id: key6_status
           timeout: 4h
           config:
@@ -960,7 +960,7 @@ tasks:
             validatorPubKey: "tasks.validator_pubkeys.outputs.pubkeys[6]"
 
         - name: check_consensus_validator_status
-          title: "Wait for key 7 balance to increase > 41 ETH"
+          title: "Wait for key 7 balance to increase > 41 QRL"
           id: key7_status
           timeout: 4h
           config:
@@ -986,7 +986,7 @@ tasks:
                   title: "Send EL triggered withdrawal transaction for key 6"
                   config:
                     limitTotal: 1
-                    withdrawAmount: 1000000000 # 1 ETH
+                    withdrawAmount: 1000000000 # 1 QRL
                     awaitReceipt: true
                     failOnReject: true
                   configVars:
@@ -1009,7 +1009,7 @@ tasks:
                   title: "Send EL triggered withdrawal transaction for key 6"
                   config:
                     limitTotal: 1
-                    withdrawAmount: 1100000000 # 1 ETH
+                    withdrawAmount: 1100000000 # 1 QRL
                     awaitReceipt: true
                     failOnReject: true
                   configVars:
@@ -1032,7 +1032,7 @@ tasks:
                   title: "Send EL triggered withdrawal transaction for key 7"
                   config:
                     limitTotal: 1
-                    withdrawAmount: 1000000000 # 1 ETH
+                    withdrawAmount: 1000000000 # 1 QRL
                     awaitReceipt: true
                     failOnReject: true
                   configVars:
@@ -1055,7 +1055,7 @@ tasks:
                   title: "Send EL triggered withdrawal transaction for key 7"
                   config:
                     limitTotal: 1
-                    withdrawAmount: 1100000000 # 1 ETH
+                    withdrawAmount: 1100000000 # 1 QRL
                     awaitReceipt: true
                     failOnReject: true
                   configVars:
@@ -1081,7 +1081,7 @@ tasks:
               title: "Send EL triggered exit transaction for key 6"
               config:
                 limitTotal: 1
-                withdrawAmount: 0 # 0 ETH - exit
+                withdrawAmount: 0 # 0 QRL - exit
                 awaitReceipt: true
                 failOnReject: true
               configVars:
@@ -1116,14 +1116,14 @@ tasks:
           config:
             tasks:
             - name: check_consensus_block_proposals
-              title: "Check withdrawal for key 6 (expect 1 ETH)"
+              title: "Check withdrawal for key 6 (expect 1 QRL)"
               timeout: 2h
               config:
                 minWithdrawalCount: 1
               configVars:
                 expectWithdrawals: "| [{publicKey: .tasks.validator_pubkeys.outputs.pubkeys[6], address: .tasks.wallet_details.outputs.address, minAmount: 1000000000, maxAmount: 1000000000}]"
             - name: check_consensus_block_proposals
-              title: "Check withdrawal for key 7 (expect 1 ETH)"
+              title: "Check withdrawal for key 7 (expect 1 QRL)"
               timeout: 2h
               config:
                 minWithdrawalCount: 1

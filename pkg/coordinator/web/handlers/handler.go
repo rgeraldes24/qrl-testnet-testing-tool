@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/buildinfo"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/web/static"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/web/templates"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/web/utils"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/buildinfo"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/web/static"
+	"github.com/theQRL/assertoor/pkg/coordinator/web/templates"
+	"github.com/theQRL/assertoor/pkg/coordinator/web/utils"
 )
 
 var LayoutTemplateFiles = []string{

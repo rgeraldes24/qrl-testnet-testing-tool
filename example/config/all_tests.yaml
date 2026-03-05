@@ -21,22 +21,7 @@ validatorNames:
 
 globalVars:
   validatorPairNames:
-  #- "lighthouse-besu-.*"
-  #- "lighthouse-erigon-.*"
-  - "lighthouse-geth-.*"
-  #- "lighthouse-nethermind-.*"
-  #- "lodestar-besu-.*"
-  #- "lodestar-erigon-.*"
-  #- "lodestar-geth-.*"
-  #- "lodestar-nethermind-.*"
-  #- "nimbus-besu-.*"
-  #- "nimbus-erigon-.*"
-  #- "nimbus-geth-.*"
-  #- "nimbus-nethermind-.*"
-  #- "teku-besu-.*"
-  #- "teku-erigon-.*"
-  - "teku-geth-.*"
-  #- "teku-nethermind-.*"
+  - "qrysm-gzond-.*"
 
 tests:
 

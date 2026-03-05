@@ -78,7 +78,7 @@ tasks:
             duration: 10s
 
         - name: run_task_options
-          title: "Generate ${{worker.depositCount}} top up deposits with 1 ETH each"
+          title: "Generate ${{worker.depositCount}} top up deposits with 1 QRL each"
           config:
             task:
               name: generate_deposits

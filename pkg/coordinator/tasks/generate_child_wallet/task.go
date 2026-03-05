@@ -6,11 +6,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 var (

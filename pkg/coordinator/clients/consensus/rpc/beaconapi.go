@@ -15,7 +15,6 @@ import (
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/http"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/rs/zerolog"
 	"github.com/sirupsen/logrus"
@@ -459,20 +458,6 @@ func (bc *BeaconClient) GetForkState(ctx context.Context, stateRef string) (*pha
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) SubmitBLSToExecutionChanges(ctx context.Context, blsChanges []*capella.SignedBLSToExecutionChange) error {
-	submitter, isOk := bc.clientSvc.(eth2client.BLSToExecutionChangesSubmitter)
-	if !isOk {
-		return fmt.Errorf("submit bls to execution changes not supported")
-	}
-
-	err := submitter.SubmitBLSToExecutionChanges(ctx, blsChanges)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (bc *BeaconClient) SubmitVoluntaryExits(ctx context.Context, exit *phase0.SignedVoluntaryExit) error {
 	submitter, isOk := bc.clientSvc.(eth2client.VoluntaryExitSubmitter)
 	if !isOk {
@@ -543,7 +528,7 @@ func (bc *BeaconClient) SubmitAttestations(ctx context.Context, attestations []*
 
 type NodeIdentity struct {
 	PeerID             string   `json:"peer_id"`
-	ENR                string   `json:"enr"`
+	QNR                string   `json:"qnr"`
 	P2PAddresses       []string `json:"p2p_addresses"`
 	DiscoveryAddresses []string `json:"discovery_addresses"`
 	Metadata           struct {

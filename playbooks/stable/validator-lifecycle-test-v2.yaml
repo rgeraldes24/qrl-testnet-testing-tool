@@ -19,7 +19,7 @@ tasks:
 - name: generate_child_wallet
   title: "Generate wallet for lifecycle test"
   config:
-    prefundMinBalance: 385000000000000000000 # ensure 321 ETH
+    prefundMinBalance: 385000000000000000000 # ensure 321 QRL
     walletAddressResultVar: "depositorAddress"
     walletPrivateKeyResultVar: "depositorPrivateKey"
   configVars:

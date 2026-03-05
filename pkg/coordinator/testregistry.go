@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/test"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
 	"github.com/jmoiron/sqlx"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/test"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
 	"gopkg.in/yaml.v3"
 )
 

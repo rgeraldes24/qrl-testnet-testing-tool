@@ -1,4 +1,4 @@
-package checkethconfig
+package checkqrlconfig
 
 type Config struct {
 	ClientPattern         string `yaml:"clientPattern" json:"clientPattern"`

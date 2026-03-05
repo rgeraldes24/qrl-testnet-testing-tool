@@ -9,14 +9,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	"github.com/theQRL/go-zond/common"
+	ethtypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 var (
@@ -321,26 +321,15 @@ func (t *Task) generateTransaction(ctx context.Context, transactionIdx uint64, c
 
 		var txObj ethtypes.TxData
 
-		if t.config.LegacyTxType {
-			txObj = &ethtypes.LegacyTx{
-				Nonce:    nonce,
-				GasPrice: t.config.FeeCap,
-				Gas:      t.config.GasLimit,
-				To:       toAddr,
-				Value:    txAmount,
-				Data:     txData,
-			}
-		} else {
-			txObj = &ethtypes.DynamicFeeTx{
-				ChainID:   t.ctx.Scheduler.GetServices().ClientPool().GetExecutionPool().GetBlockCache().GetChainID(),
-				Nonce:     nonce,
-				GasTipCap: t.config.TipCap,
-				GasFeeCap: t.config.FeeCap,
-				Gas:       t.config.GasLimit,
-				To:        toAddr,
-				Value:     txAmount,
-				Data:      txData,
-			}
+		txObj = &ethtypes.DynamicFeeTx{
+			ChainID:   t.ctx.Scheduler.GetServices().ClientPool().GetExecutionPool().GetBlockCache().GetChainID(),
+			Nonce:     nonce,
+			GasTipCap: t.config.TipCap,
+			GasFeeCap: t.config.FeeCap,
+			Gas:       t.config.GasLimit,
+			To:        toAddr,
+			Value:     txAmount,
+			Data:      txData,
 		}
 
 		return ethtypes.NewTx(txObj), nil

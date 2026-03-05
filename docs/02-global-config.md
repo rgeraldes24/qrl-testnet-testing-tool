@@ -58,7 +58,7 @@ externalTests:
   Manages the execution of tests, specifying the maximum number of tests that can run concurrently (`maxConcurrentTests`) and how long to retain test runs, including logs and status, after completion (`testRetentionTime`).
 
 - **`endpoints`**:\
-  A list of Ethereum consensus and execution clients. Each endpoint includes URLs for both RPC endpoints and a name for reference in subsequent tests.
+  A list of QRL consensus and execution clients. Each endpoint includes URLs for both RPC endpoints and a name for reference in subsequent tests.
 
 - **`web`**:\
   Configurations for the web api & frontend, detailing server host and port settings.

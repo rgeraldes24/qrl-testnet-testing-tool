@@ -41,7 +41,7 @@ tasks:
     title: "Generate wallet for lifecycle test"
     id: depositor_wallet
     config:
-      prefundMinBalance: 5001000000000000000000 # ensure 5001 ETH
+      prefundMinBalance: 5001000000000000000000 # ensure 5001 QRL
     configVars:
       privateKey: "walletPrivkey"
   - name: sleep
@@ -51,13 +51,13 @@ tasks:
 
   # generate deposits & wait for activation
   - name: run_tasks
-    title: "Generate 32 ETH deposit & track inclusion"
+    title: "Generate 32 QRL deposit & track inclusion"
     config:
       stopChildOnResult: false
       tasks:
         - name: generate_deposits
-          title: "Generate 1 deposits with 32 ETH"
-          id: validator_32_eth_deposit
+          title: "Generate 1 deposits with 32 QRL"
+          id: validator_32_qrl_deposit
           config:
             limitTotal: 1
             limitPerSlot: 1
@@ -72,13 +72,13 @@ tasks:
             withdrawalCredentials: "| \"0x020000000000000000000000\" + (.tasks.target_wallet.outputs.address | capture(\"(0x)?(?<addr>.+)\").addr)"
 
   - name: run_tasks
-    title: "Generate 2048 ETH deposit & track inclusion"
+    title: "Generate 2048 QRL deposit & track inclusion"
     config:
       stopChildOnResult: false
       tasks:
         - name: generate_deposits
-          title: "Generate 1 deposits with 2048 ETH"
-          id: validator_2048_eth_deposit
+          title: "Generate 1 deposits with 2048 QRL"
+          id: validator_2048_qrl_deposit
           config:
             limitTotal: 1
             limitPerSlot: 1
@@ -95,23 +95,23 @@ tasks:
 
   - name: check_consensus_validator_status
     title: "Wait for validator to completely be active"
-    id: validator_32_eth_info
+    id: validator_32_qrl_info
     timeout: 150m
     config:
       validatorStatus:
         - active_ongoing
     configVars:
-      validatorPubKey: "tasks.validator_32_eth_deposit.outputs.validatorPubkeys[0]"
+      validatorPubKey: "tasks.validator_32_qrl_deposit.outputs.validatorPubkeys[0]"
 
   - name: check_consensus_validator_status
     title: "Wait for validator to completely be active"
-    id: validator_2048_eth_info
+    id: validator_2048_qrl_info
     timeout: 150m
     config:
       validatorStatus:
         - active_ongoing
     configVars:
-      validatorPubKey: "tasks.validator_2048_eth_deposit.outputs.validatorPubkeys[0]"
+      validatorPubKey: "tasks.validator_2048_qrl_deposit.outputs.validatorPubkeys[0]"
 
   - name: run_tasks
     title: "Trigger consolidation overflow"
@@ -119,7 +119,7 @@ tasks:
       stopChildOnResult: false
       tasks:
       - name: generate_consolidations
-        title: "Consolidate Validator ${{tasks.validator_32_eth_info.outputs.validator.index}} to ${{tasks.validator_2048_eth_info.outputs.validator.index}}"
+        title: "Consolidate Validator ${{tasks.validator_32_qrl_info.outputs.validator.index}} to ${{tasks.validator_2048_qrl_info.outputs.validator.index}}"
         timeout: 5m
         config:
           failOnReject: true
@@ -127,29 +127,29 @@ tasks:
           sourceIndexCount: 2
         configVars:
           walletPrivkey: "walletPrivkey"
-          sourceStartValidatorIndex: "tasks.validator_32_eth_info.outputs.validator.index | tonumber"
-          targetValidatorIndex: "tasks.validator_2048_eth_info.outputs.validator.index | tonumber"
+          sourceStartValidatorIndex: "tasks.validator_32_qrl_info.outputs.validator.index | tonumber"
+          targetValidatorIndex: "tasks.validator_2048_qrl_info.outputs.validator.index | tonumber"
 
   - name: check_consensus_validator_status
-    title: "Wait for validator to completely exit (${{tasks.validator_32_eth_info.outputs.validator.index | tonumber}})"
+    title: "Wait for validator to completely exit (${{tasks.validator_32_qrl_info.outputs.validator.index | tonumber}})"
     timeout: 150m
     config:
       validatorStatus:
         - withdrawal_done
     configVars:
-      validatorIndex: "tasks.validator_32_eth_info.outputs.validator.index | tonumber"
+      validatorIndex: "tasks.validator_32_qrl_info.outputs.validator.index | tonumber"
 
   - name: check_consensus_validator_status
     title: "Refresh balance"
-    id: validator_2048_eth_post_consolidation_info
+    id: validator_2048_qrl_post_consolidation_info
     timeout: 150m
     config:
       validatorStatus:
         - active_ongoing
     configVars:
-      validatorPubKey: "tasks.validator_2048_eth_deposit.outputs.validatorPubkeys[0]"
+      validatorPubKey: "tasks.validator_2048_qrl_deposit.outputs.validatorPubkeys[0]"
 
-  # checks if the balance is over 2070ETH but the effective balance is 2048ETH (max)
+  # checks if the balance is over 2070QRL but the effective balance is 2048QRL (max)
   - name: run_tasks
     title: "Check consolidation overflow"
     timeout: 10m
@@ -160,17 +160,17 @@ tasks:
           title: "Check targetValidator status is indeed at ceiling of MaxEB"
           config:
             envVars:
-              validator: "tasks.validator_2048_eth_post_consolidation_info.outputs.validator"
+              validator: "tasks.validator_2048_qrl_post_consolidation_info.outputs.validator"
             command: |
               balance=$(echo "$validator" | jq -r '.balance')
               if [ "$balance" -lt 2048000000000 ]; then
-                echo "Balance too low! expected: >= 2048.0 ETH, got: $balance Gwei"
+                echo "Balance too low! expected: >= 2048.0 QRL, got: $balance Shor"
                 exit 1
               fi
 
               effective_balance=$(echo "$validator" | jq -r '.validator.effective_balance')
               if [ "$effective_balance" != "2048000000000" ]; then
-                echo "Effective balance too low! expected: 2048 ETH, got: $effective_balance Gwei"
+                echo "Effective balance too low! expected: 2048 QRL, got: $effective_balance Shor"
                 exit 1
               fi
 

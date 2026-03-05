@@ -35,7 +35,7 @@ The source validators can be specified in three ways:
   The number of validators to include in the withdrawal process from the specified starting index.
 
 - **`withdrawAmount`**:
-  The amount in gwei to be withdrawn per request. Setting this to `0` triggers a full exit for the validator.
+  The amount in shor to be withdrawn per request. Setting this to `0` triggers a full exit for the validator.
 
 - **`walletPrivkey`**:
   The private key of the wallet initiating the withdrawal requests, necessary for transaction authorization.

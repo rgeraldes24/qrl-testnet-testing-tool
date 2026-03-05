@@ -112,8 +112,8 @@ contract DepositContract is IDepositContract, ERC165 {
 
         // Check deposit amount
         require(msg.value >= 1 ether, "DepositContract: deposit value too low");
-        require(msg.value % 1 gwei == 0, "DepositContract: deposit value not multiple of gwei");
-        uint deposit_amount = msg.value / 1 gwei;
+        require(msg.value % 1 shor == 0, "DepositContract: deposit value not multiple of shor");
+        uint deposit_amount = msg.value / 1 shor;
         require(deposit_amount <= type(uint64).max, "DepositContract: deposit value too high");
 
         // Emit `DepositEvent` log

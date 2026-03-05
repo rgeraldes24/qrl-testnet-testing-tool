@@ -1,7 +1,7 @@
 ## `get_wallet_details` Task
 
 ### Description
-The `get_wallet_details` task retrieves detailed information about a wallet on the Ethereum blockchain. It is instrumental for validating wallet configurations and assessing their current states within various testing and operational environments.
+The `get_wallet_details` task retrieves detailed information about a wallet on the QRL blockchain. It is instrumental for validating wallet configurations and assessing their current states within various testing and operational environments.
 
 ### Configuration Parameters
 
@@ -19,7 +19,7 @@ The `get_wallet_details` task provides the following outputs after execution:
   The public address of the wallet, either derived from the provided private key or as directly specified.
 
 - **`balance`**:
-  The current balance of the wallet in wei, offering insight into the funds available at the time of the query.
+  The current balance of the wallet in planck, offering insight into the funds available at the time of the query.
 
 - **`nonce`**:
   The transaction count or nonce of the wallet, indicating the number of transactions sent from the wallet's address. This is essential for tracking the wallet's activity and sequence.

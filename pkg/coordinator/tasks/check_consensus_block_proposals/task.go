@@ -11,12 +11,12 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
 	"github.com/juliangruber/go-intersect"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/go-zond/common"
 )
 
 var (
@@ -241,11 +241,6 @@ func (t *Task) checkBlock(ctx context.Context, block *consensus.Block) bool {
 		return false
 	}
 
-	// check bls change count
-	if (t.config.MinBlsChangeCount > 0 || len(t.config.ExpectBlsChanges) > 0) && !t.checkBlockBlsChanges(block, blockData) {
-		return false
-	}
-
 	// check withdrawal count
 	if (t.config.MinWithdrawalCount > 0 || len(t.config.ExpectWithdrawals) > 0) && !t.checkBlockWithdrawals(block, blockData) {
 		return false
@@ -253,11 +248,6 @@ func (t *Task) checkBlock(ctx context.Context, block *consensus.Block) bool {
 
 	// check transaction count
 	if t.config.MinTransactionCount > 0 && !t.checkBlockTransactions(block, blockData) {
-		return false
-	}
-
-	// check blob count
-	if t.config.MinBlobCount > 0 && !t.checkBlockBlobs(block, blockData) {
 		return false
 	}
 
@@ -561,55 +551,6 @@ func (t *Task) checkBlockProposerSlashings(block *consensus.Block, blockData *sp
 	return true
 }
 
-func (t *Task) checkBlockBlsChanges(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
-	blsChanges, err := blockData.BLSToExecutionChanges()
-	if err != nil {
-		t.logger.Warnf("could not get bls to execution changes for block %v [0x%x]: %v", block.Slot, block.Root, err)
-		return false
-	}
-
-	if len(blsChanges) < t.config.MinBlsChangeCount {
-		t.logger.Infof("check failed for block %v [0x%x]: not enough bls changes (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinBlsChangeCount, len(blsChanges))
-		return false
-	}
-
-	if len(t.config.ExpectBlsChanges) > 0 {
-		validatorSet := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool().GetValidatorSet()
-		if validatorSet == nil {
-			t.logger.Errorf("check failed: no validator set")
-			return false
-		}
-
-		for _, expectedBlsChange := range t.config.ExpectBlsChanges {
-			found := false
-
-			for _, blsChange := range blsChanges {
-				validator := validatorSet[blsChange.Message.ValidatorIndex]
-				if validator == nil {
-					continue
-				}
-
-				if validator.Validator.PublicKey.String() == expectedBlsChange.PublicKey {
-					if expectedBlsChange.Address != "" && !strings.EqualFold(expectedBlsChange.Address, blsChange.Message.ToExecutionAddress.String()) {
-						t.logger.Warnf("check failed: bls change found, but execution address does not match (have: %v, want: %v)", blsChange.Message.ToExecutionAddress.String(), expectedBlsChange.Address)
-					} else {
-						found = true
-					}
-
-					break
-				}
-			}
-
-			if !found {
-				t.logger.Infof("check failed for block %v [0x%x]: expected bls change not found (pubkey: %v)", block.Slot, block.Root, expectedBlsChange.PublicKey)
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
 func (t *Task) checkBlockWithdrawals(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
 	withdrawals, err := blockData.Withdrawals()
 	if err != nil {
@@ -677,21 +618,6 @@ func (t *Task) checkBlockTransactions(block *consensus.Block, blockData *spec.Ve
 
 	if len(transactions) < t.config.MinTransactionCount {
 		t.logger.Infof("check failed for block %v [0x%x]: not enough transactions (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinTransactionCount, len(transactions))
-		return false
-	}
-
-	return true
-}
-
-func (t *Task) checkBlockBlobs(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
-	blobs, err := blockData.BlobKZGCommitments()
-	if err != nil {
-		t.logger.Warnf("could not get blobs for block %v [0x%x]: %v", block.Slot, block.Root, err)
-		return false
-	}
-
-	if len(blobs) < t.config.MinBlobCount {
-		t.logger.Infof("check failed for block %v [0x%x]: not enough blobs (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinBlobCount, len(blobs))
 		return false
 	}
 

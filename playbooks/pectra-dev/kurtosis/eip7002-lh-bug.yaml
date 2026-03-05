@@ -106,7 +106,7 @@ tasks:
           config:
             duration: 1m
 
-        # generate deposit for key 2 (add 1 ETH) & wait for inclusion
+        # generate deposit for key 2 (add 1 QRL) & wait for inclusion
         - name: run_task_background
           title: "Generate deposit with 0x02 credential change for key 2 & track inclusion"
           timeout: 10m
@@ -177,7 +177,7 @@ tasks:
               title: "Send EL triggered exit transaction for key 2"
               config:
                 limitTotal: 1
-                withdrawAmount: 0 # 0 ETH - exit
+                withdrawAmount: 0 # 0 QRL - exit
                 awaitReceipt: true
                 failOnReject: true
               configVars:

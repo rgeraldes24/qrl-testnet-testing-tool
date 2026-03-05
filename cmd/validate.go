@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/theQRL/assertoor/pkg/coordinator"
 )
 
 var validateCmd = &cobra.Command{

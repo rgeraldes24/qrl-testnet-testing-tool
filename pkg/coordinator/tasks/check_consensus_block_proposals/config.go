@@ -14,10 +14,8 @@ type Config struct {
 	MinSlashingCount             int    `yaml:"minSlashingCount" json:"minSlashingCount"`
 	MinAttesterSlashingCount     int    `yaml:"minAttesterSlashingCount" json:"minAttesterSlashingCount"`
 	MinProposerSlashingCount     int    `yaml:"minProposerSlashingCount" json:"minProposerSlashingCount"`
-	MinBlsChangeCount            int    `yaml:"minBlsChangeCount" json:"minBlsChangeCount"`
 	MinWithdrawalCount           int    `yaml:"minWithdrawalCount" json:"minWithdrawalCount"`
 	MinTransactionCount          int    `yaml:"minTransactionCount" json:"minTransactionCount"`
-	MinBlobCount                 int    `yaml:"minBlobCount" json:"minBlobCount"`
 	MinDepositRequestCount       int    `yaml:"minDepositRequestCount" json:"minDepositRequestCount"`
 	MinWithdrawalRequestCount    int    `yaml:"minWithdrawalRequestCount" json:"minWithdrawalRequestCount"`
 	MinConsolidationRequestCount int    `yaml:"minConsolidationRequestCount" json:"minConsolidationRequestCount"`

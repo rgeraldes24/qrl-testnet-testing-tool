@@ -1,6 +1,6 @@
 # Test Configuration
 
-Assertoor allows you to set up tests to check various aspects of the Ethereum network. You can organize these tests in two ways: directly within your main configuration file or through external files for more complex scenarios. Here’s how it works:
+Assertoor allows you to set up tests to check various aspects of the QRL network. You can organize these tests in two ways: directly within your main configuration file or through external files for more complex scenarios. Here’s how it works:
 
 ## Local Tests
 

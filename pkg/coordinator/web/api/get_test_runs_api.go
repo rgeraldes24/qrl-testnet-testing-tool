@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 type GetTestRunsResponse struct {

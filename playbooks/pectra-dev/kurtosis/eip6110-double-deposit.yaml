@@ -31,7 +31,7 @@ tasks:
   config:
     tasks:
     - name: generate_deposits
-      title: "Generate deposit with 2 ETH"
+      title: "Generate deposit with 2 QRL"
       config:
         limitTotal: 1
         limitPerSlot: 1
@@ -44,7 +44,7 @@ tasks:
         mnemonic: "tasks.test_mnemonic.outputs.mnemonic"
         depositContract: "depositContract"
     - name: generate_deposits
-      title: "Generate deposits with 2 ETH"
+      title: "Generate deposits with 2 QRL"
       config:
         limitTotal: 1
         limitPerSlot: 1

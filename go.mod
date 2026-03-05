@@ -1,12 +1,10 @@
-module github.com/ethpandaops/assertoor
+module github.com/theQRL/assertoor
 
-go 1.25.0
+go 1.25.5
 
 require (
 	github.com/attestantio/go-eth2-client v0.27.1
 	github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
-	github.com/ethereum/go-ethereum v1.16.5
-	github.com/ethpandaops/ethwallclock v0.4.0
 	github.com/glebarez/go-sqlite v1.22.0
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
 	github.com/gorilla/mux v1.8.1
@@ -21,13 +19,15 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/protolambda/zrnt v0.34.1
 	github.com/protolambda/ztyp v0.2.2
-	github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15
 	github.com/rs/zerolog v1.34.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.6
 	github.com/tdewolff/minify v2.3.6+incompatible
+	github.com/theQRL/go-bitfield v0.0.0-20231204084259-f3b877be8f63
+	github.com/theQRL/go-zond v1.16.5
+	github.com/theQRL/qrlwallclock v0.0.0-00010101000000-000000000000
 	github.com/tyler-smith/go-bip39 v1.1.0
 	github.com/urfave/negroni v1.0.0
 	github.com/wealdtech/go-eth2-types/v2 v2.8.2
@@ -40,17 +40,11 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bits-and-blooms/bitset v1.20.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/consensys/gnark-crypto v0.18.0 // indirect
-	github.com/crate-crypto/go-eth-kzg v1.4.0 // indirect
-	github.com/crate-crypto/go-ipa v0.0.0-20240724233137-53bbb0ceb27a // indirect
 	github.com/deckarep/golang-set/v2 v2.6.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emicklei/dot v1.6.4 // indirect
-	github.com/ethereum/c-kzg-4844/v2 v2.1.3 // indirect
-	github.com/ethereum/go-verkle v0.2.2 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/ferranbt/fastssz v0.1.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -84,15 +78,16 @@ require (
 	github.com/prometheus/common v0.66.1 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/protolambda/bls12-381-util v0.1.0 // indirect
+	github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15 // indirect
 	github.com/r3labs/sse/v2 v2.10.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	github.com/supranational/blst v0.3.16-0.20250831170142-f48500c1fdbe // indirect
 	github.com/swaggo/files v1.0.1 // indirect
 	github.com/tdewolff/parse v2.3.4+incompatible // indirect
 	github.com/tdewolff/test v1.0.10 // indirect
+	github.com/theQRL/go-qrllib v0.0.0-20251008091143-a411d9a85341 // indirect
 	github.com/tklauser/go-sysconf v0.3.14 // indirect
 	github.com/tklauser/numcpus v0.8.0 // indirect
 	github.com/wealdtech/go-bytesutil v1.2.1 // indirect
@@ -119,3 +114,7 @@ require (
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.38.2 // indirect
 )
+
+replace github.com/theQRL/qrlwallclock => github.com/rgeraldes24/qrlwallclock v0.0.0-20260305094325-7c0f2bbc3e4f
+
+replace github.com/theQRL/go-zond => github.com/rgeraldes24/go-zond v0.0.0-20260205145630-ac741c70c2c3

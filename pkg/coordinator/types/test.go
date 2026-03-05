@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
 )
 
 type TestStatus string

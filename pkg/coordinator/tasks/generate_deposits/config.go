@@ -31,9 +31,9 @@ type Config struct {
 
 func DefaultConfig() Config {
 	return Config{
-		DepositTxFeeCap: 100000000000, // 100 gwei
-		DepositTxTipCap: 1000000000,   // 1 gwei
-		DepositAmount:   32,           // 32 ETH
+		DepositTxFeeCap: 100000000000, // 100 shor
+		DepositTxTipCap: 1000000000,   // 1 shor
+		DepositAmount:   32,           // 32 QRL
 	}
 }
 

@@ -33,7 +33,7 @@ The `generate_deposits` task focuses on creating deposit transactions and sendin
   The address of the deposit contract on the blockchain. This is the destination where the deposit transactions will be sent.
 
 - **`depositAmount`**:
-  The amount in ETH to be deposited for each transaction. This setting specifies the stake amount per validator being registered.
+  The amount in QRL to be deposited for each transaction. This setting specifies the stake amount per validator being registered.
 
 - **`depositTxFeeCap`**:\
   The maximum fee cap for each deposit transaction. This limits the transaction fees for deposit operations.

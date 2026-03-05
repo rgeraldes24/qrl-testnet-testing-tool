@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution/rpc"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution/rpc"
+	"github.com/theQRL/go-zond/common"
 )
 
 type BlockCache struct {

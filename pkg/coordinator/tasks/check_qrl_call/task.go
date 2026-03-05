@@ -1,4 +1,4 @@
-package checkethcall
+package checkqrlcall
 
 import (
 	"bytes"
@@ -7,19 +7,19 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	qrl "github.com/theQRL/go-zond"
+	"github.com/theQRL/go-zond/common"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 var (
-	TaskName       = "check_eth_call"
+	TaskName       = "check_qrk_call"
 	TaskDescriptor = &types.TaskDescriptor{
 		Name:        TaskName,
-		Description: "Checks the response of an eth_call transaction",
+		Description: "Checks the response of an qrl_call transaction",
 		Config:      DefaultConfig(),
 		NewTask:     NewTask,
 	}
@@ -135,8 +135,8 @@ func (t *Task) Execute(ctx context.Context) error {
 func (t *Task) runCheck(ctx context.Context, blockNumber uint64, block *execution.Block) {
 	// Set up the call message
 	address := common.HexToAddress(t.config.CallAddress)
-	callMsg := &ethereum.CallMsg{
-		Data: common.FromHex(t.config.EthCallData),
+	callMsg := &qrl.CallMsg{
+		Data: common.FromHex(t.config.QRLCallData),
 		To:   &address,
 	}
 
@@ -190,7 +190,7 @@ func (t *Task) runCheck(ctx context.Context, blockNumber uint64, block *executio
 
 		// Send the eth_call
 		blockBigNumber := big.NewInt(0).SetUint64(blockNumber)
-		fetchedResult, err := client.GetRPCClient().GetEthCall(ctx, callMsg, blockBigNumber)
+		fetchedResult, err := client.GetRPCClient().GetQRLCall(ctx, callMsg, blockBigNumber)
 
 		// Check if the eth_call was successful
 		if err != nil {

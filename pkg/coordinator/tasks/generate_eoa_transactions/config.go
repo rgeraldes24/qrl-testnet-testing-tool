@@ -19,7 +19,6 @@ type Config struct {
 	RefillAmount       *big.Int `yaml:"refillAmount" json:"refillAmount"`
 	RefillMinBalance   *big.Int `yaml:"refillMinBalance" json:"refillMinBalance"`
 
-	LegacyTxType       bool     `yaml:"legacyTxType" json:"legacyTxType"`
 	FeeCap             *big.Int `yaml:"feeCap" json:"feeCap"`
 	TipCap             *big.Int `yaml:"tipCap" json:"tipCap"`
 	GasLimit           uint64   `yaml:"gasLimit" json:"gasLimit"`
@@ -41,12 +40,12 @@ type Config struct {
 func DefaultConfig() Config {
 	return Config{
 		RefillPendingLimit: 200,
-		RefillFeeCap:       big.NewInt(500000000000),        // 500 Gwei
-		RefillTipCap:       big.NewInt(1000000000),          // 1 Gwei
-		RefillAmount:       big.NewInt(1000000000000000000), // 1 ETH
-		RefillMinBalance:   big.NewInt(500000000000000000),  // 0.5 ETH
-		FeeCap:             big.NewInt(100000000000),        // 100 Gwei
-		TipCap:             big.NewInt(1000000000),          // 1 Gwei
+		RefillFeeCap:       big.NewInt(500000000000),        // 500 Shor
+		RefillTipCap:       big.NewInt(1000000000),          // 1 Shor
+		RefillAmount:       big.NewInt(1000000000000000000), // 1 QRL
+		RefillMinBalance:   big.NewInt(500000000000000000),  // 0.5 QRL
+		FeeCap:             big.NewInt(100000000000),        // 100 Shor
+		TipCap:             big.NewInt(1000000000),          // 1 Shor
 		GasLimit:           50000,
 		Amount:             big.NewInt(0),
 	}

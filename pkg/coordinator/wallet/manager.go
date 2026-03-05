@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/go-zond/common"
+	qrltypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 )
 
 type Manager struct {
@@ -108,14 +108,14 @@ func (manager *Manager) processBlockTransactions(block *execution.Block) {
 
 	manager.logger.Infof("processing block %v with %v transactions", block.Number, len(blockData.Transactions()))
 
-	var blockReceipts []*ethtypes.Receipt
+	var blockReceipts []*qrltypes.Receipt
 
 	receiptsLoaded := false
 
-	signer := ethtypes.LatestSignerForChainID(manager.clientPool.GetBlockCache().GetChainID())
+	signer := qrltypes.LatestSignerForChainID(manager.clientPool.GetBlockCache().GetChainID())
 
 	for idx, tx := range blockData.Transactions() {
-		txFrom, err := ethtypes.Sender(signer, tx)
+		txFrom, err := qrltypes.Sender(signer, tx)
 		if err != nil {
 			manager.logger.Warnf("error decoding tx sender (block %v, tx %v): %v", block.Number, idx, err)
 			continue
@@ -128,7 +128,7 @@ func (manager *Manager) processBlockTransactions(block *execution.Block) {
 				receiptsLoaded = true
 			}
 
-			var txReceipt *ethtypes.Receipt
+			var txReceipt *qrltypes.Receipt
 
 			if blockReceipts != nil && idx < len(blockReceipts) {
 				txReceipt = blockReceipts[idx]
@@ -145,7 +145,7 @@ func (manager *Manager) processBlockTransactions(block *execution.Block) {
 			}
 		}
 
-		if tx.Type() == ethtypes.SetCodeTxType {
+		if tx.Type() == qrltypes.SetCodeTxType {
 			// in eip7702 transactions, the nonces of all authorities are increased by >= 1, so we need to resync all affected wallets
 			authorizations := tx.SetCodeAuthorizations()
 			for i := 0; i < len(authorizations); i++ {
@@ -168,7 +168,7 @@ func (manager *Manager) processBlockTransactions(block *execution.Block) {
 	}
 }
 
-func (manager *Manager) loadBlockReceipts(block *execution.Block) []*ethtypes.Receipt {
+func (manager *Manager) loadBlockReceipts(block *execution.Block) []*qrltypes.Receipt {
 	retryCount := uint64(0)
 	readyClients := manager.clientPool.GetReadyEndpoints(true)
 
@@ -204,7 +204,7 @@ func (manager *Manager) loadBlockReceipts(block *execution.Block) []*ethtypes.Re
 	}
 }
 
-func (manager *Manager) loadBlockReceiptsFromClient(client *execution.Client, block *execution.Block) ([]*ethtypes.Receipt, error) {
+func (manager *Manager) loadBlockReceiptsFromClient(client *execution.Client, block *execution.Block) ([]*qrltypes.Receipt, error) {
 	reqCtx, reqCtxCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer reqCtxCancel()
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	"github.com/tyler-smith/go-bip39"
 )
 

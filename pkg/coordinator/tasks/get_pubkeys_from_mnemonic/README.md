@@ -1,12 +1,12 @@
 ## `get_pubkeys_from_mnemonic` Task
 
 ### Description
-The `get_pubkeys_from_mnemonic` task generates public keys from a given mnemonic phrase. This task is essential for setting up and verifying validator identities in scenarios involving multiple validators derived from a single mnemonic, commonly used in Ethereum staking operations.
+The `get_pubkeys_from_mnemonic` task generates public keys from a given mnemonic phrase. This task is essential for setting up and verifying validator identities in scenarios involving multiple validators derived from a single mnemonic, commonly used in QRL staking operations.
 
 ### Configuration Parameters
 
 - **`mnemonic`**:
-  The mnemonic phrase used to generate the public keys. This should be a BIP-39 compliant seed phrase that is used to derive Ethereum validator keys.
+  The mnemonic phrase used to generate the public keys. This should be a BIP-39 compliant seed phrase that is used to derive QRL validator keys.
 
 - **`startIndex`**:
   The starting index from which to begin deriving public keys. This allows users to specify a segment of the key sequence for generation, rather than starting from the beginning.

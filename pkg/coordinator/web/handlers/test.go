@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 type TestPageArgs struct {

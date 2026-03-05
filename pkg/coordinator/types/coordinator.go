@@ -3,12 +3,12 @@ package types
 import (
 	"context"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/logger"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/names"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/assertoor/pkg/coordinator/logger"
+	"github.com/theQRL/assertoor/pkg/coordinator/names"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
 )
 
 type Coordinator interface {

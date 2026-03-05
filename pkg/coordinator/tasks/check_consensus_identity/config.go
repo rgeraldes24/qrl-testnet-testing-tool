@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
 )
 
 type Config struct {
@@ -19,8 +19,8 @@ type Config struct {
 	MinCGC    *uint64 `yaml:"minCgc" json:"minCgc"`
 	MaxCGC    *uint64 `yaml:"maxCgc" json:"maxCgc"`
 
-	// ENR checks
-	ExpectENRField map[string]interface{} `yaml:"expectEnrField" json:"expectEnrField"`
+	// QNR checks
+	ExpectQNRField map[string]interface{} `yaml:"expectQnrField" json:"expectQnrField"`
 
 	// PeerID checks
 	ExpectPeerIDPattern string `yaml:"expectPeerIdPattern" json:"expectPeerIdPattern"`

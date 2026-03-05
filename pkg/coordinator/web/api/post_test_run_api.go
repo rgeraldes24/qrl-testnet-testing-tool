@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	"gopkg.in/yaml.v3"
 )
 

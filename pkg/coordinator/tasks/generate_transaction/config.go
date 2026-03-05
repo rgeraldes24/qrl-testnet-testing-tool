@@ -4,16 +4,13 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
 )
 
 type Config struct {
 	PrivateKey string `yaml:"privateKey" json:"privateKey"`
 
-	LegacyTxType       bool           `yaml:"legacyTxType" json:"legacyTxType"`
-	BlobTxType         bool           `yaml:"blobTxType" json:"blobTxType"`
 	SetCodeTxType      bool           `yaml:"setCodeTxType" json:"setCodeTxType"`
-	BlobFeeCap         *helper.BigInt `yaml:"blobFeeCap" json:"blobFeeCap"`
 	FeeCap             *helper.BigInt `yaml:"feeCap" json:"feeCap"`
 	TipCap             *helper.BigInt `yaml:"tipCap" json:"tipCap"`
 	GasLimit           uint64         `yaml:"gasLimit" json:"gasLimit"`
@@ -21,7 +18,6 @@ type Config struct {
 	RandomTarget       bool           `yaml:"randomTarget" json:"randomTarget"`
 	ContractDeployment bool           `yaml:"contractDeployment" json:"contractDeployment"`
 	CallData           string         `yaml:"callData" json:"callData"`
-	BlobData           string         `yaml:"blobData" json:"blobData"`
 	RandomAmount       bool           `yaml:"randomAmount" json:"randomAmount"`
 	Amount             *helper.BigInt `yaml:"amount" json:"amount"`
 	Nonce              *uint64        `yaml:"nonce" json:"nonce"`
@@ -52,8 +48,8 @@ type Config struct {
 
 func DefaultConfig() Config {
 	return Config{
-		FeeCap:       &helper.BigInt{Value: *big.NewInt(100000000000)}, // 100 Gwei
-		TipCap:       &helper.BigInt{Value: *big.NewInt(1000000000)},   // 1 Gwei
+		FeeCap:       &helper.BigInt{Value: *big.NewInt(100000000000)}, // 100 Shor
+		TipCap:       &helper.BigInt{Value: *big.NewInt(1000000000)},   // 1 Shor
 		GasLimit:     50000,
 		Amount:       &helper.BigInt{Value: *big.NewInt(0)},
 		AwaitReceipt: true,

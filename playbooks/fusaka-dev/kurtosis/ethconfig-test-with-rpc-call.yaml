@@ -1,6 +1,6 @@
 
-id: ethconfig-test
-name: "eth_config RPC consistency test (EIP-7910)"
+id: qrlconfig-test
+name: "qrl_config RPC consistency test (EIP-7910)"
 timeout: 1h
 config:
 #walletPrivkey: ""
@@ -10,8 +10,8 @@ tasks:
     timeout: 5m
     config:
       minClientCount: 1
-  - name: check_eth_config
-    title: "Check eth_config consistency across all execution clients"
+  - name: check_qrl_config
+    title: "Check qrl_config consistency across all execution clients"
     timeout: 5m
     config:
       failOnMismatch: true

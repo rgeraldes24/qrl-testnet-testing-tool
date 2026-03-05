@@ -14,15 +14,15 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	ethcommon "github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	qrlcommon "github.com/theQRL/go-zond/common"
+	qrltypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 	"github.com/tyler-smith/go-bip39"
 	util "github.com/wealdtech/go-eth2-util"
 )
@@ -45,7 +45,7 @@ type Task struct {
 	sourceSeed             []byte
 	nextIndex              uint64
 	walletPrivKey          *ecdsa.PrivateKey
-	withdrawalContractAddr ethcommon.Address
+	withdrawalContractAddr qrlcommon.Address
 }
 
 func NewTask(ctx *types.TaskContext, options *types.TaskOptions) (types.Task, error) {
@@ -97,7 +97,12 @@ func (t *Task) LoadConfig() error {
 		return fmt.Errorf("failed parsing walletPrivKey: %v", err)
 	}
 
-	t.withdrawalContractAddr = ethcommon.HexToAddress(config.WithdrawalContract)
+	addr, err := qrlcommon.NewAddressFromString(config.WithdrawalContract)
+	if err != nil {
+		return err
+	}
+
+	t.withdrawalContractAddr = addr
 
 	t.config = config
 
@@ -128,7 +133,7 @@ func (t *Task) Execute(ctx context.Context) error {
 
 	withdrawalTransactions := []string{}
 	receiptsMapMutex := sync.Mutex{}
-	withdrawalReceipts := map[string]*ethtypes.Receipt{}
+	withdrawalReceipts := map[string]*qrltypes.Receipt{}
 
 	for {
 		accountIdx := t.nextIndex
@@ -144,7 +149,7 @@ func (t *Task) Execute(ctx context.Context) error {
 
 		pendingWg.Add(1)
 
-		tx, err := t.generateWithdrawal(ctx, accountIdx, func(tx *ethtypes.Transaction, receipt *ethtypes.Receipt, err error) {
+		tx, err := t.generateWithdrawal(ctx, accountIdx, func(tx *qrltypes.Transaction, receipt *qrltypes.Receipt, err error) {
 			if pendingChan != nil {
 				<-pendingChan
 			}
@@ -259,13 +264,13 @@ func (t *Task) Execute(ctx context.Context) error {
 	return nil
 }
 
-func (t *Task) generateWithdrawal(ctx context.Context, accountIdx uint64, onConfirm wallet.TxConfirmFn) (*ethtypes.Transaction, error) {
+func (t *Task) generateWithdrawal(ctx context.Context, accountIdx uint64, onConfirm wallet.TxConfirmFn) (*qrltypes.Transaction, error) {
 	clientPool := t.ctx.Scheduler.GetServices().ClientPool()
 
 	var sourcePubkey []byte
 
 	if t.config.SourcePubkey != "" {
-		sourcePubkey = ethcommon.FromHex(t.config.SourcePubkey)
+		sourcePubkey = qrlcommon.FromHex(t.config.SourcePubkey)
 	} else {
 		var sourceValidator *v1.Validator
 
@@ -345,12 +350,12 @@ func (t *Task) generateWithdrawal(ctx context.Context, accountIdx uint64, onConf
 
 	t.logger.Infof("wallet: %v [nonce: %v]  %v ETH", txWallet.GetAddress().Hex(), txWallet.GetNonce(), txWallet.GetReadableBalance(18, 0, 4, false, false))
 
-	tx, err := txWallet.BuildTransaction(ctx, func(_ context.Context, nonce uint64, _ bind.SignerFn) (*ethtypes.Transaction, error) {
+	tx, err := txWallet.BuildTransaction(ctx, func(_ context.Context, nonce uint64, _ bind.SignerFn) (*qrltypes.Transaction, error) {
 		txData := make([]byte, 56) // 48 bytes pubkey + 8 bytes amount
 		copy(txData[0:48], sourcePubkey)
 		copy(txData[48:], amountBytes)
 
-		txObj := &ethtypes.DynamicFeeTx{
+		txObj := &qrltypes.DynamicFeeTx{
 			ChainID:   t.ctx.Scheduler.GetServices().ClientPool().GetExecutionPool().GetBlockCache().GetChainID(),
 			Nonce:     nonce,
 			GasTipCap: t.config.TxTipCap,
@@ -361,7 +366,7 @@ func (t *Task) generateWithdrawal(ctx context.Context, accountIdx uint64, onConf
 			Data:      txData,
 		}
 
-		return ethtypes.NewTx(txObj), nil
+		return qrltypes.NewTx(txObj), nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("cannot build withdrawal transaction: %w", err)

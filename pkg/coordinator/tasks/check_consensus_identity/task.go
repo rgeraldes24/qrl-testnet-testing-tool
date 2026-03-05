@@ -10,19 +10,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/go-zond/p2p/qnr"
+	"github.com/theQRL/go-zond/rlp"
 )
 
 var (
 	TaskName       = "check_consensus_identity"
 	TaskDescriptor = &types.TaskDescriptor{
 		Name:        TaskName,
-		Description: "Checks consensus client node identity information including CGC extraction from ENR.",
+		Description: "Checks consensus client node identity information including CGC extraction from QNR.",
 		Config:      DefaultConfig(),
 		NewTask:     NewTask,
 	}
@@ -38,14 +38,14 @@ type Task struct {
 type IdentityCheckResult struct {
 	ClientName         string                 `json:"clientName"`
 	PeerID             string                 `json:"peerId"`
-	ENR                string                 `json:"enr"`
+	QNR                string                 `json:"qnr"`
 	P2PAddresses       []string               `json:"p2pAddresses"`
 	DiscoveryAddresses []string               `json:"discoveryAddresses"`
 	SeqNumber          uint64                 `json:"seqNumber"`
 	Attnets            string                 `json:"attnets"`
 	Syncnets           string                 `json:"syncnets"`
 	CGC                uint64                 `json:"cgc"`
-	ENRFields          map[string]interface{} `json:"enrFields"`
+	QNRFields          map[string]interface{} `json:"qnrFields"`
 	ChecksPassed       bool                   `json:"checksPassed"`
 	FailureReasons     []string               `json:"failureReasons"`
 }
@@ -126,7 +126,7 @@ func (t *Task) processCheck() {
 		// Debug output for each client
 		t.logger.Infof("Client %s identity check result:", result.ClientName)
 		t.logger.Infof("  PeerID: %s", result.PeerID)
-		t.logger.Infof("  ENR: %s", result.ENR)
+		t.logger.Infof("  QNR: %s", result.QNR)
 		t.logger.Infof("  CGC: %d", result.CGC)
 		t.logger.Infof("  P2P Addresses: %v", result.P2PAddresses)
 		t.logger.Infof("  Discovery Addresses: %v", result.DiscoveryAddresses)
@@ -231,26 +231,26 @@ func (t *Task) checkClientIdentity(client *clients.PoolClient) *IdentityCheckRes
 		return result
 	}
 
-	t.logger.Debugf("Retrieved node identity for client %s: PeerID=%s, ENR=%s",
-		client.Config.Name, identity.PeerID, identity.ENR)
+	t.logger.Debugf("Retrieved node identity for client %s: PeerID=%s, QNR=%s",
+		client.Config.Name, identity.PeerID, identity.QNR)
 
 	result.PeerID = identity.PeerID
-	result.ENR = identity.ENR
+	result.QNR = identity.QNR
 	result.P2PAddresses = identity.P2PAddresses
 	result.DiscoveryAddresses = identity.DiscoveryAddresses
 	result.SeqNumber = identity.Metadata.SeqNumber
 	result.Attnets = identity.Metadata.Attnets
 	result.Syncnets = identity.Metadata.Syncnets
 
-	// Extract CGC from ENR
-	t.logger.Debugf("Extracting CGC from ENR for client %s", client.Config.Name)
+	// Extract CGC from QNR
+	t.logger.Debugf("Extracting CGC from QNR for client %s", client.Config.Name)
 
-	cgc, enrFields, err := t.extractCGCFromENR(identity.ENR)
+	cgc, qnrFields, err := t.extractCGCFromQNR(identity.QNR)
 	if err != nil {
-		t.logger.Errorf("Failed to parse ENR for client %s: %v", client.Config.Name, err)
+		t.logger.Errorf("Failed to parse QNR for client %s: %v", client.Config.Name, err)
 
 		result.ChecksPassed = false
-		result.FailureReasons = append(result.FailureReasons, fmt.Sprintf("Failed to parse ENR: %v", err))
+		result.FailureReasons = append(result.FailureReasons, fmt.Sprintf("Failed to parse QNR: %v", err))
 
 		return result
 	}
@@ -258,7 +258,7 @@ func (t *Task) checkClientIdentity(client *clients.PoolClient) *IdentityCheckRes
 	t.logger.Debugf("Extracted CGC=%d for client %s", cgc, client.Config.Name)
 
 	result.CGC = cgc
-	result.ENRFields = enrFields
+	result.QNRFields = qnrFields
 
 	// Perform configured checks
 	t.logger.Debugf("Performing checks for client %s", client.Config.Name)
@@ -339,40 +339,40 @@ func (t *Task) performChecks(result *IdentityCheckResult) {
 			fmt.Sprintf("Sequence number %d is below minimum %d", result.SeqNumber, *t.config.MinSeqNumber))
 	}
 
-	// Check ENR fields
-	for expectedField, expectedValue := range t.config.ExpectENRField {
-		if actualValue, exists := result.ENRFields[expectedField]; !exists {
+	// Check QNR fields
+	for expectedField, expectedValue := range t.config.ExpectQNRField {
+		if actualValue, exists := result.QNRFields[expectedField]; !exists {
 			result.ChecksPassed = false
 			result.FailureReasons = append(result.FailureReasons,
-				fmt.Sprintf("Expected ENR field %s not found", expectedField))
+				fmt.Sprintf("Expected QNR field %s not found", expectedField))
 		} else if actualValue != expectedValue {
 			result.ChecksPassed = false
 			result.FailureReasons = append(result.FailureReasons,
-				fmt.Sprintf("ENR field %s expected %v, got %v", expectedField, expectedValue, actualValue))
+				fmt.Sprintf("QNR field %s expected %v, got %v", expectedField, expectedValue, actualValue))
 		}
 	}
 }
 
-// extractCGCFromENR extracts the Custody Group Count from ENR using proper ENR parsing
-func (t *Task) extractCGCFromENR(enrStr string) (cgc uint64, enrFields map[string]interface{}, err error) {
-	if enrStr == "" {
-		t.logger.Debugf("Empty ENR provided")
-		return 0, nil, fmt.Errorf("empty ENR")
+// extractCGCFromQNR extracts the Custody Group Count from QNR using proper QNR parsing
+func (t *Task) extractCGCFromQNR(qnrStr string) (cgc uint64, qnrFields map[string]interface{}, err error) {
+	if qnrStr == "" {
+		t.logger.Debugf("Empty QNR provided")
+		return 0, nil, fmt.Errorf("empty QNR")
 	}
 
-	t.logger.Debugf("Parsing ENR: %s", enrStr)
+	t.logger.Debugf("Parsing QNR: %s", qnrStr)
 
-	// Decode ENR using go-ethereum's ENR package
-	record, err := t.decodeENR(enrStr)
+	// Decode QNR using go-ethereum's QNR package
+	record, err := t.decodeQNR(qnrStr)
 	if err != nil {
-		t.logger.Errorf("Failed to decode ENR: %v", err)
+		t.logger.Errorf("Failed to decode QNR: %v", err)
 		return 0, nil, err
 	}
 
-	// Get all key-value pairs from ENR
-	enrFields = t.getKeyValuesFromENR(record)
+	// Get all key-value pairs from QNR
+	qnrFields = t.getKeyValuesFromQNR(record)
 
-	if cgcHex, ok := enrFields["cgc"]; ok {
+	if cgcHex, ok := qnrFields["cgc"]; ok {
 		// CGC is stored as hex string, parse it
 		cgcStr, ok := cgcHex.(string)
 		if !ok {
@@ -386,22 +386,22 @@ func (t *Task) extractCGCFromENR(enrStr string) (cgc uint64, enrFields map[strin
 				t.logger.Errorf("Failed to parse CGC value %s: %v", cgcStr, err)
 			} else {
 				cgc = val
-				t.logger.Debugf("Found CGC in ENR: %d", cgc)
+				t.logger.Debugf("Found CGC in QNR: %d", cgc)
 			}
 		}
 	} else {
-		t.logger.Debugf("No CGC field found in ENR")
+		t.logger.Debugf("No CGC field found in QNR")
 	}
 
-	enrFields["enr_original"] = enrStr
+	qnrFields["qnr_original"] = qnrStr
 
-	return cgc, enrFields, nil
+	return cgc, qnrFields, nil
 }
 
-// decodeENR decodes an ENR string into a Record (from Dora's implementation)
-func (t *Task) decodeENR(raw string) (*enr.Record, error) {
+// decodeQNR decodes an QNR string into a Record (from Dora's implementation)
+func (t *Task) decodeQNR(raw string) (*qnr.Record, error) {
 	b := []byte(raw)
-	if strings.HasPrefix(raw, "enr:") {
+	if strings.HasPrefix(raw, "qnr:") {
 		b = b[4:]
 	}
 
@@ -412,15 +412,15 @@ func (t *Task) decodeENR(raw string) (*enr.Record, error) {
 		return nil, err
 	}
 
-	var r enr.Record
+	var r qnr.Record
 
 	err = rlp.DecodeBytes(dec[:n], &r)
 
 	return &r, err
 }
 
-// getKeyValuesFromENR extracts all key-value pairs from an ENR record (from Dora's implementation)
-func (t *Task) getKeyValuesFromENR(r *enr.Record) map[string]interface{} {
+// getKeyValuesFromQNR extracts all key-value pairs from an QNR record (from Dora's implementation)
+func (t *Task) getKeyValuesFromQNR(r *qnr.Record) map[string]interface{} {
 	fields := make(map[string]interface{})
 
 	fields["seq"] = r.Seq()
@@ -431,26 +431,26 @@ func (t *Task) getKeyValuesFromENR(r *enr.Record) map[string]interface{} {
 	for i := 0; i < len(kv); i += 2 {
 		key, ok := kv[i].(string)
 		if !ok {
-			t.logger.Warnf("Invalid ENR key type: %T", kv[i])
+			t.logger.Warnf("Invalid QNR key type: %T", kv[i])
 			continue
 		}
 
 		val, ok := kv[i+1].(rlp.RawValue)
 		if !ok {
-			t.logger.Warnf("Invalid ENR value type for key %s: %T", key, kv[i+1])
+			t.logger.Warnf("Invalid QNR value type for key %s: %T", key, kv[i+1])
 			continue
 		}
 
 		// Format the value based on the key
-		fmtval := t.formatENRValue(key, val)
+		fmtval := t.formatQNRValue(key, val)
 		fields[key] = fmtval
 	}
 
 	return fields
 }
 
-// formatENRValue formats an ENR value based on its key type
-func (t *Task) formatENRValue(key string, val rlp.RawValue) string {
+// formatQNRValue formats an QNR value based on its key type
+func (t *Task) formatQNRValue(key string, val rlp.RawValue) string {
 	switch key {
 	case "id":
 		content, _, err := rlp.SplitString(val)

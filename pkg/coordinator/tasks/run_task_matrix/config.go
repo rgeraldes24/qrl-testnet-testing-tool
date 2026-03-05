@@ -3,7 +3,7 @@ package runtaskmatrix
 import (
 	"errors"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/assertoor/pkg/coordinator/helper"
 )
 
 type Config struct {

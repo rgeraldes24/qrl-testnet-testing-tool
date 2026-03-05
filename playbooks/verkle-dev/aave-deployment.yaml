@@ -14,7 +14,7 @@ tasks:
   - name: generate_child_wallet
     title: "Generate wallet for deployment"
     config:
-      prefundMinBalance: 1000000000000000000 # 1 ETH
+      prefundMinBalance: 1000000000000000000 # 1 QRL
       walletAddressResultVar: "deployerAddress"
       walletPrivateKeyResultVar: "deployerPrivateKey"
       walletSeed: "aave-deployer"

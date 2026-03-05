@@ -20,7 +20,7 @@ tasks:
 - name: generate_child_wallet
   title: "Generate wallet for lifecycle test"
   config:
-    prefundMinBalance: 2501000000000000000000 # ensure 2501 ETH
+    prefundMinBalance: 2501000000000000000000 # ensure 2501 QRL
     walletAddressResultVar: "depositorAddress"
     walletPrivateKeyResultVar: "depositorPrivateKey"
   configVars:
@@ -37,7 +37,7 @@ tasks:
     stopChildOnResult: false
     tasks:
     - name: generate_deposits
-      title: "Generate 2 deposits with 1000 ETH each"
+      title: "Generate 2 deposits with 1000 QRL each"
       config:
         limitTotal: 2
         limitPerSlot: 1

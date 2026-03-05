@@ -3,8 +3,8 @@ package logger
 import (
 	"sync"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/db"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/db"
 	"gopkg.in/yaml.v3"
 )
 

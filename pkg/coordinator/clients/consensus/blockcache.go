@@ -13,9 +13,9 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethpandaops/ethwallclock"
 	"github.com/mashingan/smapping"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/qrlwallclock"
 )
 
 type BlockCache struct {
@@ -29,7 +29,7 @@ type BlockCache struct {
 	genesis      *v1.Genesis
 
 	wallclockMutex sync.Mutex
-	wallclock      *ethwallclock.EthereumBeaconChain
+	wallclock      *qrlwallclock.QRLBeaconChain
 
 	finalizedMutex sync.RWMutex
 	finalizedEpoch phase0.Epoch
@@ -46,8 +46,8 @@ type BlockCache struct {
 
 	blockDispatcher          Dispatcher[*Block]
 	checkpointDispatcher     Dispatcher[*FinalizedCheckpoint]
-	wallclockEpochDispatcher Dispatcher[*ethwallclock.Epoch]
-	wallclockSlotDispatcher  Dispatcher[*ethwallclock.Slot]
+	wallclockEpochDispatcher Dispatcher[*qrlwallclock.Epoch]
+	wallclockSlotDispatcher  Dispatcher[*qrlwallclock.Slot]
 }
 
 func NewBlockCache(ctx context.Context, logger logrus.FieldLogger, followDistance uint32) (*BlockCache, error) {
@@ -87,11 +87,11 @@ func (cache *BlockCache) SubscribeFinalizedEvent(capacity int) *Subscription[*Fi
 	return cache.checkpointDispatcher.Subscribe(capacity)
 }
 
-func (cache *BlockCache) SubscribeWallclockEpochEvent(capacity int) *Subscription[*ethwallclock.Epoch] {
+func (cache *BlockCache) SubscribeWallclockEpochEvent(capacity int) *Subscription[*qrlwallclock.Epoch] {
 	return cache.wallclockEpochDispatcher.Subscribe(capacity)
 }
 
-func (cache *BlockCache) SubscribeWallclockSlotEvent(capacity int) *Subscription[*ethwallclock.Slot] {
+func (cache *BlockCache) SubscribeWallclockSlotEvent(capacity int) *Subscription[*qrlwallclock.Slot] {
 	return cache.wallclockSlotDispatcher.Subscribe(capacity)
 }
 
@@ -185,16 +185,16 @@ func (cache *BlockCache) InitWallclock() {
 		return
 	}
 
-	cache.wallclock = ethwallclock.NewEthereumBeaconChain(cache.genesis.GenesisTime, specs.SecondsPerSlot, specs.SlotsPerEpoch)
-	cache.wallclock.OnEpochChanged(func(current ethwallclock.Epoch) {
+	cache.wallclock = qrlwallclock.NewQRLBeaconChain(cache.genesis.GenesisTime, specs.SecondsPerSlot, specs.SlotsPerEpoch)
+	cache.wallclock.OnEpochChanged(func(current qrlwallclock.Epoch) {
 		cache.wallclockEpochDispatcher.Fire(&current)
 	})
-	cache.wallclock.OnSlotChanged(func(current ethwallclock.Slot) {
+	cache.wallclock.OnSlotChanged(func(current qrlwallclock.Slot) {
 		cache.wallclockSlotDispatcher.Fire(&current)
 	})
 }
 
-func (cache *BlockCache) GetWallclock() *ethwallclock.EthereumBeaconChain {
+func (cache *BlockCache) GetWallclock() *qrlwallclock.QRLBeaconChain {
 	cache.wallclockMutex.Lock()
 	defer cache.wallclockMutex.Unlock()
 

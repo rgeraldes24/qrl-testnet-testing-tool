@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/vars"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/go-zond/common"
 )
 
 var (
@@ -204,12 +204,12 @@ func (t *Task) runValidatorStatusCheck() bool {
 			}
 		}
 
-		if t.config.MinValidatorBalance > 0 && validator.Balance < phase0.Gwei(t.config.MinValidatorBalance) {
+		if t.config.MinValidatorBalance > 0 && validator.Balance < phase0.Shor(t.config.MinValidatorBalance) {
 			t.logger.Infof("check failed: validator balance below minimum: %v", validator.Balance)
 			continue
 		}
 
-		if t.config.MaxValidatorBalance != nil && validator.Balance > phase0.Gwei(*t.config.MaxValidatorBalance) {
+		if t.config.MaxValidatorBalance != nil && validator.Balance > phase0.Shor(*t.config.MaxValidatorBalance) {
 			t.logger.Infof("check failed: validator balance above maximum: %v", validator.Balance)
 			continue
 		}

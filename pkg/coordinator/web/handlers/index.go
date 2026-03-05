@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 )
 
 type IndexPageArgs struct {

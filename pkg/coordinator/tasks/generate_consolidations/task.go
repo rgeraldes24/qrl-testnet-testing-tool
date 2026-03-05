@@ -13,15 +13,15 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	ethcommon "github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/execution"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/wallet"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/go-zond/accounts/abi/bind"
+	"github.com/theQRL/go-zond/common"
+	ethtypes "github.com/theQRL/go-zond/core/types"
+	"github.com/theQRL/go-zond/crypto"
 	"github.com/tyler-smith/go-bip39"
 	util "github.com/wealdtech/go-eth2-util"
 )
@@ -45,7 +45,7 @@ type Task struct {
 	nextIndex                 uint64
 	lastIndex                 uint64
 	walletPrivKey             *ecdsa.PrivateKey
-	consolidationContractAddr ethcommon.Address
+	consolidationContractAddr common.Address
 }
 
 func NewTask(ctx *types.TaskContext, options *types.TaskOptions) (types.Task, error) {
@@ -97,7 +97,12 @@ func (t *Task) LoadConfig() error {
 		return err
 	}
 
-	t.consolidationContractAddr = ethcommon.HexToAddress(config.ConsolidationContract)
+	addr, err := common.NewAddressFromString(config.ConsolidationContract)
+	if err != nil {
+		return err
+	}
+
+	t.consolidationContractAddr = addr
 
 	t.config = config
 
@@ -307,7 +312,7 @@ func (t *Task) generateConsolidation(ctx context.Context, accountIdx uint64, onC
 
 	if t.config.TargetValidatorIndex == nil {
 		// select by public key
-		targetPubkey := ethcommon.FromHex(t.config.TargetPublicKey)
+		targetPubkey := common.FromHex(t.config.TargetPublicKey)
 		for _, val := range validatorSet {
 			if bytes.Equal(val.Validator.PublicKey[:], targetPubkey) {
 				targetValidator = val
@@ -357,7 +362,7 @@ func (t *Task) generateConsolidation(ctx context.Context, accountIdx uint64, onC
 		return nil, fmt.Errorf("cannot load wallet state: %w", err)
 	}
 
-	t.logger.Infof("wallet: %v [nonce: %v]  %v ETH", txWallet.GetAddress().Hex(), txWallet.GetNonce(), txWallet.GetReadableBalance(18, 0, 4, false, false))
+	t.logger.Infof("wallet: %v [nonce: %v]  %v QRL", txWallet.GetAddress().Hex(), txWallet.GetNonce(), txWallet.GetReadableBalance(18, 0, 4, false, false))
 
 	tx, err := txWallet.BuildTransaction(ctx, func(_ context.Context, nonce uint64, _ bind.SignerFn) (*ethtypes.Transaction, error) {
 		txData := make([]byte, 96)

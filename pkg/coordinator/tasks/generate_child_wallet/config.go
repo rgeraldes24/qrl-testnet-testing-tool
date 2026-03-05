@@ -21,10 +21,10 @@ type Config struct {
 
 func DefaultConfig() Config {
 	return Config{
-		PrefundFeeCap:     big.NewInt(500000000000),        // 500 Gwei
-		PrefundTipCap:     big.NewInt(1000000000),          // 1 Gwei
-		PrefundAmount:     big.NewInt(1000000000000000000), // 1 ETH
-		PrefundMinBalance: big.NewInt(500000000000000000),  // 0.5 ETH
+		PrefundFeeCap:     big.NewInt(500000000000),        // 500 Shor
+		PrefundTipCap:     big.NewInt(1000000000),          // 1 Shor
+		PrefundAmount:     big.NewInt(1000000000000000000), // 1 QRL
+		PrefundMinBalance: big.NewInt(500000000000000000),  // 0.5 QRL
 	}
 }
 

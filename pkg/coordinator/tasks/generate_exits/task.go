@@ -10,12 +10,12 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/ethpandaops/assertoor/pkg/coordinator/types"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/ztyp/tree"
 	"github.com/sirupsen/logrus"
+	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	"github.com/tyler-smith/go-bip39"
 	util "github.com/wealdtech/go-eth2-util"
 )
@@ -235,10 +235,7 @@ func (t *Task) generateVoluntaryExit(ctx context.Context, accountIdx uint64, for
 		return fmt.Errorf("failed converting validator priv key: %w", err)
 	}
 
-	forkVersion := fork.CurrentVersion
-	if uint64(fork.Epoch) >= specs.CappellaForkEpoch {
-		forkVersion = specs.CappellaForkVersion
-	}
+	forkVersion = specs.CappellaForkVersion
 
 	genesis := clientPool.GetConsensusPool().GetBlockCache().GetGenesis()
 	dom := common.ComputeDomain(common.DOMAIN_VOLUNTARY_EXIT, common.Version(forkVersion), tree.Root(genesis.GenesisValidatorsRoot))
