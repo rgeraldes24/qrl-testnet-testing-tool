@@ -1,8 +1,8 @@
 package consensus
 
-import "github.com/attestantio/go-eth2-client/spec/phase0"
+import "github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 
 type FinalizedCheckpoint struct {
-	Epoch phase0.Epoch
-	Root  phase0.Root
+	Epoch zond.Epoch
+	Root  zond.Root
 }

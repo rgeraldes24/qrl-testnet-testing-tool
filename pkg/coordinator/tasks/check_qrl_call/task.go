@@ -7,12 +7,12 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
 	qrl "github.com/theQRL/go-zond"
 	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 var (

@@ -6,16 +6,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 )
 
 type Block struct {
-	Root        phase0.Root
-	Slot        phase0.Slot
+	Root        zond.Root
+	Slot        zond.Slot
 	headerMutex sync.Mutex
 	headerChan  chan bool
-	header      *phase0.SignedBeaconBlockHeader
+	header      *zond.SignedBeaconBlockHeader
 	blockMutex  sync.Mutex
 	blockChan   chan bool
 	block       *spec.VersionedSignedBeaconBlock
@@ -47,11 +47,11 @@ func (block *Block) SetSeenBy(client *Client) {
 	block.seenMap[client.clientIdx] = client
 }
 
-func (block *Block) GetHeader() *phase0.SignedBeaconBlockHeader {
+func (block *Block) GetHeader() *zond.SignedBeaconBlockHeader {
 	return block.header
 }
 
-func (block *Block) AwaitHeader(ctx context.Context, timeout time.Duration) *phase0.SignedBeaconBlockHeader {
+func (block *Block) AwaitHeader(ctx context.Context, timeout time.Duration) *zond.SignedBeaconBlockHeader {
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -83,7 +83,7 @@ func (block *Block) AwaitBlock(ctx context.Context, timeout time.Duration) *spec
 	return block.block
 }
 
-func (block *Block) GetParentRoot() *phase0.Root {
+func (block *Block) GetParentRoot() *zond.Root {
 	if block.header == nil {
 		return nil
 	}
@@ -91,11 +91,11 @@ func (block *Block) GetParentRoot() *phase0.Root {
 	return &block.header.Message.ParentRoot
 }
 
-func (block *Block) SetHeader(header *phase0.SignedBeaconBlockHeader) {
+func (block *Block) SetHeader(header *zond.SignedBeaconBlockHeader) {
 	block.header = header
 }
 
-func (block *Block) EnsureHeader(loadHeader func() (*phase0.SignedBeaconBlockHeader, error)) error {
+func (block *Block) EnsureHeader(loadHeader func() (*zond.SignedBeaconBlockHeader, error)) error {
 	if block.header != nil {
 		return nil
 	}

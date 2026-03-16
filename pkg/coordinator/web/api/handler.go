@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 // @title Assertoor API Documentation

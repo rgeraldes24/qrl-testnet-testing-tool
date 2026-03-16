@@ -1,9 +1,8 @@
-module github.com/theQRL/assertoor
+module github.com/theQRL/qrl-testnet-testing-tool
 
 go 1.25.5
 
 require (
-	github.com/attestantio/go-eth2-client v0.27.1
 	github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
 	github.com/glebarez/go-sqlite v1.22.0
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
@@ -19,6 +18,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/protolambda/zrnt v0.34.1
 	github.com/protolambda/ztyp v0.2.2
+	github.com/rgeraldes24/go-qrl-beacon-client v0.0.0-20260316103624-9136c7b913e8
 	github.com/rs/zerolog v1.34.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.1
@@ -78,7 +78,6 @@ require (
 	github.com/prometheus/common v0.66.1 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/protolambda/bls12-381-util v0.1.0 // indirect
-	github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15 // indirect
 	github.com/r3labs/sse/v2 v2.10.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect

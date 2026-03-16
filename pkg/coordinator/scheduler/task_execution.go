@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 // ExecuteTask executes a task

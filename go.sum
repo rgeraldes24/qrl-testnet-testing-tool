@@ -8,8 +8,6 @@ github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERo
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/VictoriaMetrics/fastcache v1.13.0 h1:AW4mheMR5Vd9FkAPUv+NH6Nhw+fmbTMGMsNAoA/+4G0=
 github.com/VictoriaMetrics/fastcache v1.13.0/go.mod h1:hHXhl4DA2fTL2HTZDJFXWgW0LNjo6B+4aj2Wmng3TjU=
-github.com/attestantio/go-eth2-client v0.27.1 h1:g7bm+gG/p+gfzYdEuxuAepVWYb8EO+2KojV5/Lo2BxM=
-github.com/attestantio/go-eth2-client v0.27.1/go.mod h1:fvULSL9WtNskkOB4i+Yyr6BKpNHXvmpGZj9969fCrfY=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=
@@ -211,14 +209,14 @@ github.com/protolambda/ztyp v0.2.2 h1:rVcL3vBu9W/aV646zF6caLS/dyn9BN8NYiuJzicLNy
 github.com/protolambda/ztyp v0.2.2/go.mod h1:9bYgKGqg3wJqT9ac1gI2hnVb0STQq7p/1lapqrqY1dU=
 github.com/prysmaticlabs/fastssz v0.0.0-20221107182844-78142813af44 h1:c3p3UzV4vFA7xaCDphnDWOjpxcadrQ26l5b+ypsvyxo=
 github.com/prysmaticlabs/fastssz v0.0.0-20221107182844-78142813af44/go.mod h1:MA5zShstUwCQaE9faGHgCGvEWUbG87p4SAXINhmCkvg=
-github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15 h1:lC8kiphgdOBTcbTvo8MwkvpKjO0SlAgjv4xIK5FGJ94=
-github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15/go.mod h1:8svFBIKKu31YriBG/pNizo9N0Jr9i5PQ+dFkxWg3x5k=
 github.com/prysmaticlabs/gohashtree v0.0.4-beta h1:H/EbCuXPeTV3lpKeXGPpEV9gsUpkqOOVnWapUyeWro4=
 github.com/prysmaticlabs/gohashtree v0.0.4-beta/go.mod h1:BFdtALS+Ffhg3lGQIHv9HDWuHS8cTvHZzrHWxwOtGOs=
 github.com/r3labs/sse/v2 v2.10.0 h1:hFEkLLFY4LDifoHdiCN/LlGBAdVJYsANaLqNYa1l/v0=
 github.com/r3labs/sse/v2 v2.10.0/go.mod h1:Igau6Whc+F17QUgML1fYe1VPZzTV6EMCnYktEmkNJ7I=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
+github.com/rgeraldes24/go-qrl-beacon-client v0.0.0-20260316103624-9136c7b913e8 h1:4OlGEvv+fUA0cb1Y7QHyDOsWfldsZXGKWKV5I7rV3Qc=
+github.com/rgeraldes24/go-qrl-beacon-client v0.0.0-20260316103624-9136c7b913e8/go.mod h1:+SM2sUPMNura1IJUKFr0Ytsso6Si7ThFM2PqdJUgMl0=
 github.com/rgeraldes24/go-zond v0.0.0-20260205145630-ac741c70c2c3 h1:KcMALX5z6IedpY1NWRDGi1gG9Y8eUPBhs6EuYKFa7CE=
 github.com/rgeraldes24/go-zond v0.0.0-20260205145630-ac741c70c2c3/go.mod h1:auESRmDb7Rb/ZROGrThQJQDxePVKi42/tTV8im48fgQ=
 github.com/rgeraldes24/qrlwallclock v0.0.0-20260305094325-7c0f2bbc3e4f h1:i46KmGhSeLV4fWNaPAG7zkD/1pb9pRk6wPFjKWZ5dyw=

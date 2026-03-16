@@ -3,11 +3,11 @@ package types
 import (
 	"context"
 
-	"github.com/theQRL/assertoor/pkg/coordinator/clients"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/helper"
-	"github.com/theQRL/assertoor/pkg/coordinator/names"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/helper"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/names"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 )
 
 type TaskSchedulerRunner interface {

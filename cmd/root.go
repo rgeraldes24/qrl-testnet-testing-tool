@@ -5,8 +5,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/theQRL/assertoor/pkg/coordinator"
-	"github.com/theQRL/assertoor/pkg/coordinator/buildinfo"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/buildinfo"
 )
 
 // rootCmd represents the base command when called without any subcommands

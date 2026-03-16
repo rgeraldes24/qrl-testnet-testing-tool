@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
 	"github.com/theQRL/go-zond/common"
 	qrltypes "github.com/theQRL/go-zond/core/types"
 	"github.com/theQRL/go-zond/crypto"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
 )
 
 type Manager struct {

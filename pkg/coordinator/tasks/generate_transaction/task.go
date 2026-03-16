@@ -10,15 +10,15 @@ import (
 
 	"github.com/holiman/uint256"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/vars"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
 	"github.com/theQRL/go-zond/accounts/abi/bind"
 	"github.com/theQRL/go-zond/common"
 	"github.com/theQRL/go-zond/common/hexutil"
 	qrltypes "github.com/theQRL/go-zond/core/types"
 	"github.com/theQRL/go-zond/crypto"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/vars"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 )
 
 var (

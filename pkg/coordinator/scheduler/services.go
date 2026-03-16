@@ -1,11 +1,11 @@
 package scheduler
 
 import (
-	"github.com/theQRL/assertoor/pkg/coordinator/clients"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/names"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/names"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 )
 
 type servicesProvider struct {

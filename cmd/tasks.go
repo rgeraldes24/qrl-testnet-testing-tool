@@ -8,7 +8,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/theQRL/assertoor/pkg/coordinator/tasks"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/tasks"
 	"gopkg.in/yaml.v3"
 )
 

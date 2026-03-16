@@ -8,15 +8,15 @@ import (
 	"strings"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/ztyp/tree"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	ethcommon "github.com/theQRL/go-zond/common"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 	"github.com/tyler-smith/go-bip39"
 	e2types "github.com/wealdtech/go-eth2-types/v2"
 	util "github.com/wealdtech/go-eth2-util"
@@ -151,7 +151,7 @@ func (t *Task) Execute(ctx context.Context) error {
 	return nil
 }
 
-func (t *Task) loadChainState(ctx context.Context) (*phase0.Fork, error) {
+func (t *Task) loadChainState(ctx context.Context) (*zond.Fork, error) {
 	client := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool().AwaitReadyEndpoint(ctx, consensus.AnyClient)
 	if client == nil {
 		return nil, ctx.Err()
@@ -165,7 +165,7 @@ func (t *Task) loadChainState(ctx context.Context) (*phase0.Fork, error) {
 	return forkState, nil
 }
 
-func (t *Task) generateSlashing(ctx context.Context, accountIdx uint64, forkState *phase0.Fork) error {
+func (t *Task) generateSlashing(ctx context.Context, accountIdx uint64, forkState *zond.Fork) error {
 	clientPool := t.ctx.Scheduler.GetServices().ClientPool()
 	validatorKeyPath := fmt.Sprintf("m/12381/3600/%d/0/0", accountIdx)
 
@@ -192,9 +192,9 @@ func (t *Task) generateSlashing(ctx context.Context, accountIdx uint64, forkStat
 		return fmt.Errorf("validator %v is not active", validator.Index)
 	}
 
-	var attesterSlashing *phase0.AttesterSlashing
+	var attesterSlashing *zond.AttesterSlashing
 
-	var proposerSlashing *phase0.ProposerSlashing
+	var proposerSlashing *zond.ProposerSlashing
 
 	switch t.config.SlashingType {
 	case "attester", "surround_attester":
@@ -256,7 +256,7 @@ func (t *Task) mnemonicToSeed(mnemonic string) (seed []byte, err error) {
 	return bip39.NewSeed(mnemonic, ""), nil
 }
 
-func (t *Task) generateSurroundAttesterSlashing(validatorIndex uint64, validatorKey *e2types.BLSPrivateKey, forkState *phase0.Fork) (*phase0.AttesterSlashing, error) {
+func (t *Task) generateSurroundAttesterSlashing(validatorIndex uint64, validatorKey *e2types.BLSPrivateKey, forkState *zond.Fork) (*zond.AttesterSlashing, error) {
 	// surround attester slashing case:
 	// different target, different source
 	// source1 < source 2
@@ -280,22 +280,22 @@ func (t *Task) generateSurroundAttesterSlashing(validatorIndex uint64, validator
 	targetEpoch2 := slot2 / specs.SlotsPerEpoch
 	sourceEpoch2 := targetEpoch2
 
-	source1 := &phase0.Checkpoint{
-		Epoch: phase0.Epoch(sourceEpoch1),
-		Root:  phase0.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
+	source1 := &zond.Checkpoint{
+		Epoch: zond.Epoch(sourceEpoch1),
+		Root:  zond.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
 	}
-	target1 := &phase0.Checkpoint{
-		Epoch: phase0.Epoch(targetEpoch1),
-		Root:  phase0.Root(ethcommon.FromHex("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
+	target1 := &zond.Checkpoint{
+		Epoch: zond.Epoch(targetEpoch1),
+		Root:  zond.Root(ethcommon.FromHex("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
 	}
 
-	source2 := &phase0.Checkpoint{
-		Epoch: phase0.Epoch(sourceEpoch2),
-		Root:  phase0.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
+	source2 := &zond.Checkpoint{
+		Epoch: zond.Epoch(sourceEpoch2),
+		Root:  zond.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
 	}
-	target2 := &phase0.Checkpoint{
-		Epoch: phase0.Epoch(targetEpoch2),
-		Root:  phase0.Root(ethcommon.FromHex("0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")),
+	target2 := &zond.Checkpoint{
+		Epoch: zond.Epoch(targetEpoch2),
+		Root:  zond.Root(ethcommon.FromHex("0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")),
 	}
 
 	committeeIndex := uint64(0)
@@ -308,17 +308,17 @@ func (t *Task) generateSurroundAttesterSlashing(validatorIndex uint64, validator
 		return nil, fmt.Errorf("failed converting validator priv key: %w", err)
 	}
 
-	attestationData1 := &phase0.AttestationData{
-		Slot:            phase0.Slot(slot1),
-		Index:           phase0.CommitteeIndex(committeeIndex),
-		BeaconBlockRoot: phase0.Root(ethcommon.FromHex("0x00000000219ab540356cBB839Cbe05303d7705Fa424242424242424242424242")),
+	attestationData1 := &zond.AttestationData{
+		Slot:            zond.Slot(slot1),
+		Index:           zond.CommitteeIndex(committeeIndex),
+		BeaconBlockRoot: zond.Root(ethcommon.FromHex("0x00000000219ab540356cBB839Cbe05303d7705Fa424242424242424242424242")),
 		Source:          source1,
 		Target:          target1,
 	}
-	attestationData2 := &phase0.AttestationData{
-		Slot:            phase0.Slot(slot2),
-		Index:           phase0.CommitteeIndex(committeeIndex),
-		BeaconBlockRoot: phase0.Root(ethcommon.FromHex("0x00000000219ab540356cBB839Cbe05303d7705Fa424242424242424242424242")),
+	attestationData2 := &zond.AttestationData{
+		Slot:            zond.Slot(slot2),
+		Index:           zond.CommitteeIndex(committeeIndex),
+		BeaconBlockRoot: zond.Root(ethcommon.FromHex("0x00000000219ab540356cBB839Cbe05303d7705Fa424242424242424242424242")),
 		Source:          source2,
 		Target:          target2,
 	}
@@ -339,42 +339,42 @@ func (t *Task) generateSurroundAttesterSlashing(validatorIndex uint64, validator
 	signingRoot2 := common.ComputeSigningRoot(msgRoot2, dom)
 	sig2 := secKey.SignHash(signingRoot2[:])
 
-	att1 := &phase0.IndexedAttestation{
+	att1 := &zond.IndexedAttestation{
 		AttestingIndices: []uint64{validatorIndex},
 		Data:             attestationData1,
-		Signature:        phase0.BLSSignature(sig1.Serialize()),
+		Signatures:       zond.BLSSignature(sig1.Serialize()),
 	}
-	att2 := &phase0.IndexedAttestation{
+	att2 := &zond.IndexedAttestation{
 		AttestingIndices: []uint64{validatorIndex},
 		Data:             attestationData2,
-		Signature:        phase0.BLSSignature(sig2.Serialize()),
+		Signatures:       zond.BLSSignature(sig2.Serialize()),
 	}
 
-	return &phase0.AttesterSlashing{
+	return &zond.AttesterSlashing{
 		Attestation1: att1,
 		Attestation2: att2,
 	}, nil
 }
 
-func (t *Task) generateProposerSlashing(validatorIndex uint64, validatorKey *e2types.BLSPrivateKey, forkState *phase0.Fork) (*phase0.ProposerSlashing, error) {
+func (t *Task) generateProposerSlashing(validatorIndex uint64, validatorKey *e2types.BLSPrivateKey, forkState *zond.Fork) (*zond.ProposerSlashing, error) {
 	clPool := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool()
 	genesis := clPool.GetBlockCache().GetGenesis()
 
 	slot, _, _ := clPool.GetBlockCache().GetWallclock().Now()
 
-	headerData1 := &phase0.BeaconBlockHeader{
-		Slot:          phase0.Slot(slot.Number()),
-		ProposerIndex: phase0.ValidatorIndex(validatorIndex),
-		ParentRoot:    phase0.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
-		StateRoot:     phase0.Root(ethcommon.FromHex("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
-		BodyRoot:      phase0.Root(ethcommon.FromHex("0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1")),
+	headerData1 := &zond.BeaconBlockHeader{
+		Slot:          zond.Slot(slot.Number()),
+		ProposerIndex: zond.ValidatorIndex(validatorIndex),
+		ParentRoot:    zond.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
+		StateRoot:     zond.Root(ethcommon.FromHex("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
+		BodyRoot:      zond.Root(ethcommon.FromHex("0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1")),
 	}
-	headerData2 := &phase0.BeaconBlockHeader{
-		Slot:          phase0.Slot(slot.Number()),
-		ProposerIndex: phase0.ValidatorIndex(validatorIndex),
-		ParentRoot:    phase0.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
-		StateRoot:     phase0.Root(ethcommon.FromHex("0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")),
-		BodyRoot:      phase0.Root(ethcommon.FromHex("0xb1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1")),
+	headerData2 := &zond.BeaconBlockHeader{
+		Slot:          zond.Slot(slot.Number()),
+		ProposerIndex: zond.ValidatorIndex(validatorIndex),
+		ParentRoot:    zond.Root(ethcommon.FromHex("0x1010101010101010101010101010101010101010101010101010101010101010")),
+		StateRoot:     zond.Root(ethcommon.FromHex("0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")),
+		BodyRoot:      zond.Root(ethcommon.FromHex("0xb1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1")),
 	}
 
 	dom := common.ComputeDomain(common.DOMAIN_BEACON_PROPOSER, common.Version(forkState.CurrentVersion), tree.Root(genesis.GenesisValidatorsRoot))
@@ -402,16 +402,16 @@ func (t *Task) generateProposerSlashing(validatorIndex uint64, validatorKey *e2t
 	signingRoot2 := common.ComputeSigningRoot(msgRoot2, dom)
 	sig2 := secKey.SignHash(signingRoot2[:])
 
-	header1 := &phase0.SignedBeaconBlockHeader{
+	header1 := &zond.SignedBeaconBlockHeader{
 		Message:   headerData1,
-		Signature: phase0.BLSSignature(sig1.Serialize()),
+		Signature: zond.BLSSignature(sig1.Serialize()),
 	}
-	header2 := &phase0.SignedBeaconBlockHeader{
+	header2 := &zond.SignedBeaconBlockHeader{
 		Message:   headerData2,
-		Signature: phase0.BLSSignature(sig2.Serialize()),
+		Signature: zond.BLSSignature(sig2.Serialize()),
 	}
 
-	return &phase0.ProposerSlashing{
+	return &zond.ProposerSlashing{
 		SignedHeader1: header1,
 		SignedHeader2: header2,
 	}, nil

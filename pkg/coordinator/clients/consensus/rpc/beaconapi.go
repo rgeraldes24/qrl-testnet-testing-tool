@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	eth2client "github.com/attestantio/go-eth2-client"
-	"github.com/attestantio/go-eth2-client/api"
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/http"
-	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	eth2client "github.com/rgeraldes24/go-qrl-beacon-client"
+	"github.com/rgeraldes24/go-qrl-beacon-client/api"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/http"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/rs/zerolog"
 	"github.com/sirupsen/logrus"
 )
@@ -299,7 +299,7 @@ func (bc *BeaconClient) GetFinalityCheckpoints(ctx context.Context) (*v1.Finalit
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) GetBlockHeaderByBlockroot(ctx context.Context, blockroot phase0.Root) (*v1.BeaconBlockHeader, error) {
+func (bc *BeaconClient) GetBlockHeaderByBlockroot(ctx context.Context, blockroot zond.Root) (*v1.BeaconBlockHeader, error) {
 	provider, isProvider := bc.clientSvc.(eth2client.BeaconBlockHeadersProvider)
 	if !isProvider {
 		return nil, fmt.Errorf("get beacon block headers not supported")
@@ -318,7 +318,7 @@ func (bc *BeaconClient) GetBlockHeaderByBlockroot(ctx context.Context, blockroot
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) GetBlockHeaderBySlot(ctx context.Context, slot phase0.Slot) (*v1.BeaconBlockHeader, error) {
+func (bc *BeaconClient) GetBlockHeaderBySlot(ctx context.Context, slot zond.Slot) (*v1.BeaconBlockHeader, error) {
 	provider, isProvider := bc.clientSvc.(eth2client.BeaconBlockHeadersProvider)
 	if !isProvider {
 		return nil, fmt.Errorf("get beacon block headers not supported")
@@ -337,7 +337,7 @@ func (bc *BeaconClient) GetBlockHeaderBySlot(ctx context.Context, slot phase0.Sl
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) GetBlockBodyByBlockroot(ctx context.Context, blockroot phase0.Root) (*spec.VersionedSignedBeaconBlock, error) {
+func (bc *BeaconClient) GetBlockBodyByBlockroot(ctx context.Context, blockroot zond.Root) (*spec.VersionedSignedBeaconBlock, error) {
 	provider, isProvider := bc.clientSvc.(eth2client.SignedBeaconBlockProvider)
 	if !isProvider {
 		return nil, fmt.Errorf("get signed beacon block not supported")
@@ -379,7 +379,7 @@ func (bc *BeaconClient) GetState(ctx context.Context, stateRef string) (*spec.Ve
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) GetStateValidators(ctx context.Context, stateRef string) (map[phase0.ValidatorIndex]*v1.Validator, error) {
+func (bc *BeaconClient) GetStateValidators(ctx context.Context, stateRef string) (map[zond.ValidatorIndex]*v1.Validator, error) {
 	provider, isProvider := bc.clientSvc.(eth2client.ValidatorsProvider)
 	if !isProvider {
 		return nil, fmt.Errorf("get validators not supported")
@@ -405,7 +405,7 @@ func (bc *BeaconClient) GetProposerDuties(ctx context.Context, epoch uint64) ([]
 	}
 
 	result, err := provider.ProposerDuties(ctx, &api.ProposerDutiesOpts{
-		Epoch: phase0.Epoch(epoch),
+		Epoch: zond.Epoch(epoch),
 		Common: api.CommonOpts{
 			Timeout: 0,
 		},
@@ -423,7 +423,7 @@ func (bc *BeaconClient) GetCommitteeDuties(ctx context.Context, stateRef string,
 		return nil, fmt.Errorf("get beacon committees not supported")
 	}
 
-	epochRef := phase0.Epoch(epoch)
+	epochRef := zond.Epoch(epoch)
 
 	result, err := provider.BeaconCommittees(ctx, &api.BeaconCommitteesOpts{
 		State: stateRef,
@@ -439,7 +439,7 @@ func (bc *BeaconClient) GetCommitteeDuties(ctx context.Context, stateRef string,
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) GetForkState(ctx context.Context, stateRef string) (*phase0.Fork, error) {
+func (bc *BeaconClient) GetForkState(ctx context.Context, stateRef string) (*zond.Fork, error) {
 	provider, isProvider := bc.clientSvc.(eth2client.ForkProvider)
 	if !isProvider {
 		return nil, fmt.Errorf("get fork not supported")
@@ -458,7 +458,7 @@ func (bc *BeaconClient) GetForkState(ctx context.Context, stateRef string) (*pha
 	return result.Data, nil
 }
 
-func (bc *BeaconClient) SubmitVoluntaryExits(ctx context.Context, exit *phase0.SignedVoluntaryExit) error {
+func (bc *BeaconClient) SubmitVoluntaryExits(ctx context.Context, exit *zond.SignedVoluntaryExit) error {
 	submitter, isOk := bc.clientSvc.(eth2client.VoluntaryExitSubmitter)
 	if !isOk {
 		return fmt.Errorf("submit voluntary exit not supported")
@@ -472,7 +472,7 @@ func (bc *BeaconClient) SubmitVoluntaryExits(ctx context.Context, exit *phase0.S
 	return nil
 }
 
-func (bc *BeaconClient) SubmitAttesterSlashing(ctx context.Context, slashing *phase0.AttesterSlashing) error {
+func (bc *BeaconClient) SubmitAttesterSlashing(ctx context.Context, slashing *zond.AttesterSlashing) error {
 	err := bc.postJSON(ctx, fmt.Sprintf("%s/eth/v1/beacon/pool/attester_slashings", bc.endpoint), slashing, nil)
 	if err != nil {
 		return err
@@ -481,7 +481,7 @@ func (bc *BeaconClient) SubmitAttesterSlashing(ctx context.Context, slashing *ph
 	return nil
 }
 
-func (bc *BeaconClient) SubmitProposerSlashing(ctx context.Context, slashing *phase0.ProposerSlashing) error {
+func (bc *BeaconClient) SubmitProposerSlashing(ctx context.Context, slashing *zond.ProposerSlashing) error {
 	err := bc.postJSON(ctx, fmt.Sprintf("%s/eth/v1/beacon/pool/proposer_slashings", bc.endpoint), slashing, nil)
 	if err != nil {
 		return err
@@ -491,10 +491,10 @@ func (bc *BeaconClient) SubmitProposerSlashing(ctx context.Context, slashing *ph
 }
 
 type apiAttestationData struct {
-	Data *phase0.AttestationData `json:"data"`
+	Data *zond.AttestationData `json:"data"`
 }
 
-func (bc *BeaconClient) GetAttestationData(ctx context.Context, slot, committeeIndex uint64) (*phase0.AttestationData, error) {
+func (bc *BeaconClient) GetAttestationData(ctx context.Context, slot, committeeIndex uint64) (*zond.AttestationData, error) {
 	var attestationData apiAttestationData
 
 	err := bc.getJSON(ctx, fmt.Sprintf("%s/eth/v1/validator/attestation_data?slot=%d&committee_index=%d", bc.endpoint, slot, committeeIndex), &attestationData)
@@ -507,10 +507,10 @@ func (bc *BeaconClient) GetAttestationData(ctx context.Context, slot, committeeI
 
 // SingleAttestation represents the Electra single attestation format for the v2 API.
 type SingleAttestation struct {
-	CommitteeIndex uint64                  `json:"committee_index,string"`
-	AttesterIndex  uint64                  `json:"attester_index,string"`
-	Data           *phase0.AttestationData `json:"data"`
-	Signature      string                  `json:"signature"`
+	CommitteeIndex uint64                `json:"committee_index,string"`
+	AttesterIndex  uint64                `json:"attester_index,string"`
+	Data           *zond.AttestationData `json:"data"`
+	Signature      string                `json:"signature"`
 }
 
 func (bc *BeaconClient) SubmitAttestations(ctx context.Context, attestations []*SingleAttestation) error {

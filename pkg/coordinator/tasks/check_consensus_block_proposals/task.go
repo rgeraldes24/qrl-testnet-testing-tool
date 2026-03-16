@@ -1,7 +1,6 @@
 package checkconsensusblockproposals
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"math/big"
@@ -9,14 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/juliangruber/go-intersect"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/vars"
-	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/vars"
 )
 
 var (
@@ -251,21 +249,6 @@ func (t *Task) checkBlock(ctx context.Context, block *consensus.Block) bool {
 		return false
 	}
 
-	// check deposit request count
-	if (t.config.MinDepositRequestCount > 0 || len(t.config.ExpectDepositRequests) > 0) && !t.checkBlockDepositRequests(block, blockData) {
-		return false
-	}
-
-	// check withdrawal request count
-	if (t.config.MinWithdrawalRequestCount > 0 || len(t.config.ExpectWithdrawalRequests) > 0) && !t.checkBlockWithdrawalRequests(block, blockData) {
-		return false
-	}
-
-	// check consolidation request count
-	if (t.config.MinConsolidationRequestCount > 0 || len(t.config.ExpectConsolidationRequests) > 0) && !t.checkBlockConsolidationRequests(block, blockData) {
-		return false
-	}
-
 	return true
 }
 
@@ -478,7 +461,7 @@ func (t *Task) checkBlockSlashings(block *consensus.Block, blockData *spec.Versi
 							continue
 						}
 
-						validator := validatorSet[phase0.ValidatorIndex(valIdx)]
+						validator := validatorSet[zond.ValidatorIndex(valIdx)]
 						if validator == nil {
 							continue
 						}
@@ -619,167 +602,6 @@ func (t *Task) checkBlockTransactions(block *consensus.Block, blockData *spec.Ve
 	if len(transactions) < t.config.MinTransactionCount {
 		t.logger.Infof("check failed for block %v [0x%x]: not enough transactions (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinTransactionCount, len(transactions))
 		return false
-	}
-
-	return true
-}
-
-func (t *Task) checkBlockDepositRequests(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
-	executionRequests, err := blockData.ExecutionRequests()
-	if err != nil {
-		t.logger.Warnf("could not get execution requests for block %v [0x%x]: %v", block.Slot, block.Root, err)
-		return false
-	}
-
-	depositRequests := executionRequests.Deposits
-	if len(depositRequests) < t.config.MinDepositRequestCount {
-		t.logger.Infof("check failed for block %v [0x%x]: not enough deposit requests (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinDepositRequestCount, len(depositRequests))
-		return false
-	}
-
-	if len(t.config.ExpectDepositRequests) > 0 {
-		for _, expectedDepositRequest := range t.config.ExpectDepositRequests {
-			found := false
-
-			var expectedWithdrawalCreds []byte
-
-			if expectedDepositRequest.WithdrawalCredentials != "" {
-				expectedWithdrawalCreds = common.FromHex(expectedDepositRequest.WithdrawalCredentials)
-			}
-
-		requestLoop:
-			for _, depositRequest := range depositRequests {
-				if expectedDepositRequest.PublicKey == "" || depositRequest.Pubkey.String() == expectedDepositRequest.PublicKey {
-					depositAmount := big.NewInt(0).SetUint64(uint64(depositRequest.Amount))
-
-					switch {
-					case expectedDepositRequest.WithdrawalCredentials != "" && !bytes.Equal(expectedWithdrawalCreds, depositRequest.WithdrawalCredentials):
-						t.logger.Warnf("check failed: deposit request found, but withdrawal credentials do not match (have: 0x%x, want: 0x%x)", depositRequest.WithdrawalCredentials, expectedWithdrawalCreds)
-					case expectedDepositRequest.Amount.Cmp(big.NewInt(0)) > 0 && expectedDepositRequest.Amount.Cmp(depositAmount) != 0:
-						t.logger.Warnf("check failed: deposit request found, but amount does not match (have: %v, want: %v)", depositAmount, expectedDepositRequest.Amount.String())
-					default:
-						found = true
-						break requestLoop
-					}
-				}
-			}
-
-			if !found {
-				t.logger.Infof("check failed for block %v [0x%x]: expected deposit request not found (pubkey: %v)", block.Slot, block.Root, expectedDepositRequest.PublicKey)
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
-func (t *Task) checkBlockWithdrawalRequests(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
-	executionRequests, err := blockData.ExecutionRequests()
-	if err != nil {
-		t.logger.Warnf("could not get execution requests for block %v [0x%x]: %v", block.Slot, block.Root, err)
-		return false
-	}
-
-	withdrawalRequests := executionRequests.Withdrawals
-	if len(withdrawalRequests) < t.config.MinWithdrawalRequestCount {
-		t.logger.Infof("check failed for block %v [0x%x]: not enough withdrawal requests (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinWithdrawalRequestCount, len(withdrawalRequests))
-		return false
-	}
-
-	if len(t.config.ExpectWithdrawalRequests) > 0 {
-		for _, expectedWithdrawalRequest := range t.config.ExpectWithdrawalRequests {
-			found := false
-
-			var expectedAddress, expectedPubKey []byte
-
-			if expectedWithdrawalRequest.SourceAddress != "" {
-				expectedAddress = common.FromHex(expectedWithdrawalRequest.SourceAddress)
-			}
-
-			if expectedWithdrawalRequest.ValidatorPubkey != "" {
-				expectedPubKey = common.FromHex(expectedWithdrawalRequest.ValidatorPubkey)
-			}
-
-		requestLoop:
-			for _, withdrawalRequest := range withdrawalRequests {
-				if expectedWithdrawalRequest.ValidatorPubkey == "" || bytes.Equal(withdrawalRequest.ValidatorPubkey[:], expectedPubKey) {
-					withdrawalAmount := big.NewInt(0).SetUint64(uint64(withdrawalRequest.Amount))
-
-					switch {
-					case expectedWithdrawalRequest.SourceAddress != "" && !bytes.Equal(expectedAddress, withdrawalRequest.SourceAddress[:]):
-						t.logger.Warnf("check failed: withdrawal request found, but source address does not match (have: 0x%x, want: 0x%x)", withdrawalRequest.SourceAddress, expectedAddress)
-					case expectedWithdrawalRequest.Amount != nil && expectedWithdrawalRequest.Amount.Cmp(withdrawalAmount) != 0:
-						t.logger.Warnf("check failed: deposit request found, but amount does not match (have: %v, want: %v)", withdrawalAmount, expectedWithdrawalRequest.Amount.String())
-					default:
-						found = true
-						break requestLoop
-					}
-				}
-			}
-
-			if !found {
-				t.logger.Infof("check failed for block %v [0x%x]: expected withdrawal request not found (address: %v, pubkey: %v)", block.Slot, block.Root, expectedWithdrawalRequest.SourceAddress, expectedWithdrawalRequest.ValidatorPubkey)
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
-func (t *Task) checkBlockConsolidationRequests(block *consensus.Block, blockData *spec.VersionedSignedBeaconBlock) bool {
-	executionRequests, err := blockData.ExecutionRequests()
-	if err != nil {
-		t.logger.Warnf("could not get execution requests for block %v [0x%x]: %v", block.Slot, block.Root, err)
-		return false
-	}
-
-	consolidationRequests := executionRequests.Consolidations
-	if len(consolidationRequests) < t.config.MinConsolidationRequestCount {
-		t.logger.Infof("check failed for block %v [0x%x]: not enough consolidation requests (want: >= %v, have: %v)", block.Slot, block.Root, t.config.MinConsolidationRequestCount, len(consolidationRequests))
-		return false
-	}
-
-	if len(t.config.ExpectConsolidationRequests) > 0 {
-		for _, expectedConsolidationRequest := range t.config.ExpectConsolidationRequests {
-			found := false
-
-			var expectedAddress, expectedSrcPubKey, expectedTgtPubKey []byte
-
-			if expectedConsolidationRequest.SourceAddress != "" {
-				expectedAddress = common.FromHex(expectedConsolidationRequest.SourceAddress)
-			}
-
-			if expectedConsolidationRequest.SourcePubkey != "" {
-				expectedSrcPubKey = common.FromHex(expectedConsolidationRequest.SourcePubkey)
-			}
-
-			if expectedConsolidationRequest.TargetPubkey != "" {
-				expectedTgtPubKey = common.FromHex(expectedConsolidationRequest.TargetPubkey)
-			}
-
-		requestLoop:
-			for _, consolidationRequest := range consolidationRequests {
-				if expectedConsolidationRequest.SourcePubkey == "" || bytes.Equal(consolidationRequest.SourcePubkey[:], expectedSrcPubKey) {
-					switch {
-					case expectedConsolidationRequest.SourceAddress != "" && !bytes.Equal(expectedAddress, consolidationRequest.SourceAddress[:]):
-						t.logger.Warnf("check failed: consolidation request found, but source address does not match (have: 0x%x, want: 0x%x)", consolidationRequest.SourceAddress, expectedAddress)
-					case expectedConsolidationRequest.TargetPubkey != "" && !bytes.Equal(expectedTgtPubKey, consolidationRequest.TargetPubkey[:]):
-						t.logger.Warnf("check failed: consolidation request found, but target pubkey does not match (have: 0x%x, want: 0x%x)", consolidationRequest.SourceAddress, expectedAddress)
-
-					default:
-						found = true
-						break requestLoop
-					}
-				}
-			}
-
-			if !found {
-				t.logger.Infof("check failed for block %v [0x%x]: expected consolidation request not found (address: %v, pubkey: %v)", block.Slot, block.Root, expectedConsolidationRequest.SourceAddress, expectedConsolidationRequest.SourcePubkey)
-				return false
-			}
-		}
 	}
 
 	return true

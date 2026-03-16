@@ -1,7 +1,7 @@
 package vars
 
 import (
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 type ScopeFilter struct {

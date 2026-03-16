@@ -3,18 +3,18 @@ package consensus
 import (
 	"errors"
 
-	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec"
 )
 
 func GetExecutionExtraData(v *spec.VersionedSignedBeaconBlock) ([]byte, error) {
 	//nolint:exhaustive // ignore
 	switch v.Version {
-	case spec.DataVersionCapella:
-		if v.Capella == nil || v.Capella.Message == nil || v.Capella.Message.Body == nil || v.Capella.Message.Body.ExecutionPayload == nil {
+	case spec.DataVersionZond:
+		if v.Zond == nil || v.Zond.Message == nil || v.Zond.Message.Body == nil || v.Zond.Message.Body.ExecutionPayload == nil {
 			return nil, errors.New("no capella block")
 		}
 
-		return v.Capella.Message.Body.ExecutionPayload.ExtraData, nil
+		return v.Zond.Message.Body.ExecutionPayload.ExtraData, nil
 	default:
 		return nil, errors.New("unknown version")
 	}
@@ -23,8 +23,8 @@ func GetExecutionExtraData(v *spec.VersionedSignedBeaconBlock) ([]byte, error) {
 func GetBlockBody(v *spec.VersionedSignedBeaconBlock) any {
 	//nolint:exhaustive // ignore
 	switch v.Version {
-	case spec.DataVersionCapella:
-		return v.Capella
+	case spec.DataVersionZond:
+		return v.Zond
 	default:
 		return nil
 	}

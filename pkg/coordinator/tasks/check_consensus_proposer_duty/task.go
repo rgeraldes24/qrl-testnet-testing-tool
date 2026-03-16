@@ -6,10 +6,10 @@ import (
 	"regexp"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 var (

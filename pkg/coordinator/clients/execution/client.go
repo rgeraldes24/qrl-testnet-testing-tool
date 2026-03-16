@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution/rpc"
 	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution/rpc"
 )
 
 type ClientStatus uint8

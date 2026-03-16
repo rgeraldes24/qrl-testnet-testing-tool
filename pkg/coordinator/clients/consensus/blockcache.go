@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/mashingan/smapping"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
 	"github.com/theQRL/qrlwallclock"
 )
@@ -32,16 +32,16 @@ type BlockCache struct {
 	wallclock      *qrlwallclock.QRLBeaconChain
 
 	finalizedMutex sync.RWMutex
-	finalizedEpoch phase0.Epoch
-	finalizedRoot  phase0.Root
+	finalizedEpoch zond.Epoch
+	finalizedRoot  zond.Root
 
 	valsetMutex sync.Mutex
-	valsetEpoch phase0.Epoch
-	valsetMap   map[phase0.ValidatorIndex]*v1.Validator
+	valsetEpoch zond.Epoch
+	valsetMap   map[zond.ValidatorIndex]*v1.Validator
 
 	blockMutex   sync.RWMutex
-	blockSlotMap map[phase0.Slot][]*Block
-	blockRootMap map[phase0.Root]*Block
+	blockSlotMap map[zond.Slot][]*Block
+	blockRootMap map[zond.Root]*Block
 	maxSlotIdx   int64
 
 	blockDispatcher          Dispatcher[*Block]
@@ -57,8 +57,8 @@ func NewBlockCache(ctx context.Context, logger logrus.FieldLogger, followDistanc
 
 	cache := BlockCache{
 		followDistance: followDistance,
-		blockSlotMap:   make(map[phase0.Slot][]*Block),
-		blockRootMap:   make(map[phase0.Root]*Block),
+		blockSlotMap:   make(map[zond.Slot][]*Block),
+		blockRootMap:   make(map[zond.Root]*Block),
 	}
 
 	go func() {
@@ -201,7 +201,7 @@ func (cache *BlockCache) GetWallclock() *qrlwallclock.QRLBeaconChain {
 	return cache.wallclock
 }
 
-func (cache *BlockCache) SetFinalizedCheckpoint(finalizedEpoch phase0.Epoch, finalizedRoot phase0.Root) {
+func (cache *BlockCache) SetFinalizedCheckpoint(finalizedEpoch zond.Epoch, finalizedRoot zond.Root) {
 	cache.finalizedMutex.Lock()
 
 	if finalizedEpoch <= cache.finalizedEpoch {
@@ -219,25 +219,25 @@ func (cache *BlockCache) SetFinalizedCheckpoint(finalizedEpoch phase0.Epoch, fin
 	})
 }
 
-func (cache *BlockCache) GetFinalizedCheckpoint() (phase0.Epoch, phase0.Root) {
+func (cache *BlockCache) GetFinalizedCheckpoint() (zond.Epoch, zond.Root) {
 	cache.finalizedMutex.RLock()
 	defer cache.finalizedMutex.RUnlock()
 
 	return cache.finalizedEpoch, cache.finalizedRoot
 }
 
-func (cache *BlockCache) getCachedValidatorSet(loadFn func() map[phase0.ValidatorIndex]*v1.Validator) map[phase0.ValidatorIndex]*v1.Validator {
+func (cache *BlockCache) getCachedValidatorSet(loadFn func() map[zond.ValidatorIndex]*v1.Validator) map[zond.ValidatorIndex]*v1.Validator {
 	wallclock := cache.GetWallclock()
 
 	cache.valsetMutex.Lock()
 	defer cache.valsetMutex.Unlock()
 
-	epoch := phase0.Epoch(0)
+	epoch := zond.Epoch(0)
 
 	if wallclock != nil {
 		_, e, _ := wallclock.Now()
 		if e.Number() < math.MaxInt64 {
-			epoch = phase0.Epoch(e.Number())
+			epoch = zond.Epoch(e.Number())
 		}
 	}
 
@@ -253,7 +253,7 @@ func (cache *BlockCache) getCachedValidatorSet(loadFn func() map[phase0.Validato
 	return cache.valsetMap
 }
 
-func (cache *BlockCache) AddBlock(root phase0.Root, slot phase0.Slot) (*Block, bool) {
+func (cache *BlockCache) AddBlock(root zond.Root, slot zond.Slot) (*Block, bool) {
 	cache.blockMutex.Lock()
 	defer cache.blockMutex.Unlock()
 
@@ -261,7 +261,7 @@ func (cache *BlockCache) AddBlock(root phase0.Root, slot phase0.Slot) (*Block, b
 		return cache.blockRootMap[root], false
 	}
 
-	if cutOffSlot := cache.maxSlotIdx - int64(cache.followDistance); cutOffSlot > 0 && slot < phase0.Slot(cutOffSlot) {
+	if cutOffSlot := cache.maxSlotIdx - int64(cache.followDistance); cutOffSlot > 0 && slot < zond.Slot(cutOffSlot) {
 		return nil, false
 	}
 
@@ -280,21 +280,21 @@ func (cache *BlockCache) AddBlock(root phase0.Root, slot phase0.Slot) (*Block, b
 		cache.blockSlotMap[slot] = append(cache.blockSlotMap[slot], cacheBlock)
 	}
 
-	if cache.maxSlotIdx < 0 || slot > phase0.Slot(cache.maxSlotIdx) {
+	if cache.maxSlotIdx < 0 || slot > zond.Slot(cache.maxSlotIdx) {
 		cache.maxSlotIdx = int64(slot) //nolint:gosec // no overflow possible
 	}
 
 	return cacheBlock, true
 }
 
-func (cache *BlockCache) GetCachedBlockByRoot(root phase0.Root) *Block {
+func (cache *BlockCache) GetCachedBlockByRoot(root zond.Root) *Block {
 	cache.blockMutex.RLock()
 	defer cache.blockMutex.RUnlock()
 
 	return cache.blockRootMap[root]
 }
 
-func (cache *BlockCache) GetCachedBlocksBySlot(slot phase0.Slot) []*Block {
+func (cache *BlockCache) GetCachedBlocksBySlot(slot zond.Slot) []*Block {
 	cache.blockMutex.RLock()
 	defer cache.blockMutex.RUnlock()
 
@@ -314,7 +314,7 @@ func (cache *BlockCache) GetCachedBlocks() []*Block {
 	defer cache.blockMutex.RUnlock()
 
 	blocks := []*Block{}
-	slots := []phase0.Slot{}
+	slots := []zond.Slot{}
 
 	for slot := range cache.blockSlotMap {
 		slots = append(slots, slot)
@@ -354,7 +354,7 @@ func (cache *BlockCache) cleanupBlockCache() {
 	}
 
 	for slot, blocks := range cache.blockSlotMap {
-		if slot >= phase0.Slot(minSlot) {
+		if slot >= zond.Slot(minSlot) {
 			continue
 		}
 
@@ -372,12 +372,12 @@ func (cache *BlockCache) cleanupValsetCache() {
 	}
 
 	wallclock := cache.GetWallclock()
-	epoch := phase0.Epoch(0)
+	epoch := zond.Epoch(0)
 
 	if wallclock != nil {
 		_, e, _ := wallclock.Now()
 		if e.Number() < math.MaxInt64 {
-			epoch = phase0.Epoch(e.Number())
+			epoch = zond.Epoch(e.Number())
 		}
 	}
 
@@ -389,12 +389,12 @@ func (cache *BlockCache) cleanupValsetCache() {
 	}
 }
 
-func (cache *BlockCache) IsCanonicalBlock(blockRoot, headRoot phase0.Root) bool {
+func (cache *BlockCache) IsCanonicalBlock(blockRoot, headRoot zond.Root) bool {
 	res, _ := cache.GetBlockDistance(blockRoot, headRoot)
 	return res
 }
 
-func (cache *BlockCache) GetBlockDistance(blockRoot, headRoot phase0.Root) (linked bool, distance uint64) {
+func (cache *BlockCache) GetBlockDistance(blockRoot, headRoot zond.Root) (linked bool, distance uint64) {
 	if bytes.Equal(headRoot[:], blockRoot[:]) {
 		return true, 0
 	}

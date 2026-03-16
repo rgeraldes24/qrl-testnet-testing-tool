@@ -7,10 +7,10 @@ import (
 	"runtime/debug"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus/rpc"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus/rpc"
 )
 
 func (client *Client) runClientLoop() {
@@ -132,8 +132,8 @@ func (client *Client) runClientLogic() error {
 	specs := client.pool.blockCache.GetSpecs()
 
 	finalizedEpoch, _ := client.pool.blockCache.GetFinalizedCheckpoint()
-	if client.headSlot < phase0.Slot(finalizedEpoch)*phase0.Slot(specs.SlotsPerEpoch) {
-		return fmt.Errorf("beacon node is behind finalized checkpoint (node head: %v, finalized: %v)", client.headSlot, phase0.Slot(finalizedEpoch)*phase0.Slot(specs.SlotsPerEpoch))
+	if client.headSlot < zond.Slot(finalizedEpoch)*zond.Slot(specs.SlotsPerEpoch) {
+		return fmt.Errorf("beacon node is behind finalized checkpoint (node head: %v, finalized: %v)", client.headSlot, zond.Slot(finalizedEpoch)*zond.Slot(specs.SlotsPerEpoch))
 	}
 
 	// start event stream
@@ -246,7 +246,7 @@ func (client *Client) pollClientHead() error {
 	return client.setFinalizedHead(finalityCheckpoint.Finalized.Epoch, finalityCheckpoint.Finalized.Root)
 }
 
-func (client *Client) processBlock(root phase0.Root, slot phase0.Slot, header *phase0.SignedBeaconBlockHeader, source string) error {
+func (client *Client) processBlock(root zond.Root, slot zond.Slot, header *zond.SignedBeaconBlockHeader, source string) error {
 	cachedBlock, isNewBlock := client.pool.blockCache.AddBlock(root, slot)
 	if cachedBlock == nil {
 		return fmt.Errorf("could not add block to cache %v [0x%x]", slot, root)
@@ -260,7 +260,7 @@ func (client *Client) processBlock(root phase0.Root, slot phase0.Slot, header *p
 		client.logger.Debugf("received known cl block %v [0x%x] %v", slot, root, source)
 	}
 
-	err := cachedBlock.EnsureHeader(func() (*phase0.SignedBeaconBlockHeader, error) {
+	err := cachedBlock.EnsureHeader(func() (*zond.SignedBeaconBlockHeader, error) {
 		if header != nil {
 			return header, nil
 		}
@@ -315,7 +315,7 @@ func (client *Client) processBlock(root phase0.Root, slot phase0.Slot, header *p
 	return nil
 }
 
-func (client *Client) setFinalizedHead(epoch phase0.Epoch, root phase0.Root) error {
+func (client *Client) setFinalizedHead(epoch zond.Epoch, root zond.Root) error {
 	client.headMutex.Lock()
 
 	if bytes.Equal(client.finalizedRoot[:], root[:]) {

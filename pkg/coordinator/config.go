@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/theQRL/assertoor/pkg/coordinator/clients"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/helper"
-	"github.com/theQRL/assertoor/pkg/coordinator/names"
-	"github.com/theQRL/assertoor/pkg/coordinator/test"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	web_types "github.com/theQRL/assertoor/pkg/coordinator/web/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/helper"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/names"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/test"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	web_types "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/web/types"
 	"gopkg.in/yaml.v3"
 )
 

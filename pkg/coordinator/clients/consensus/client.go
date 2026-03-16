@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus/rpc"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus/rpc"
 )
 
 type ClientStatus uint8
@@ -42,10 +42,10 @@ type Client struct {
 	retryCounter         uint64
 	lastError            error
 	headMutex            sync.RWMutex
-	headRoot             phase0.Root
-	headSlot             phase0.Slot
-	finalizedRoot        phase0.Root
-	finalizedEpoch       phase0.Epoch
+	headRoot             zond.Root
+	headSlot             zond.Slot
+	finalizedRoot        zond.Root
+	finalizedEpoch       zond.Epoch
 	blockDispatcher      Dispatcher[*Block]
 	checkpointDispatcher Dispatcher[*FinalizedCheckpoint]
 }
@@ -114,7 +114,7 @@ func (client *Client) GetRPCClient() *rpc.BeaconClient {
 	return client.rpcClient
 }
 
-func (client *Client) GetLastHead() (phase0.Slot, phase0.Root) {
+func (client *Client) GetLastHead() (zond.Slot, zond.Root) {
 	client.headMutex.RLock()
 	defer client.headMutex.RUnlock()
 

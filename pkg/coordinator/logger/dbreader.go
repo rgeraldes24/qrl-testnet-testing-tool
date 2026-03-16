@@ -1,6 +1,6 @@
 package logger
 
-import "github.com/theQRL/assertoor/pkg/coordinator/db"
+import "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
 
 type logDBReader struct {
 	database  *db.Database

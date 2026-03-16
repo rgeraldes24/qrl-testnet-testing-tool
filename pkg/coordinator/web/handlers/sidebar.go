@@ -1,6 +1,6 @@
 package handlers
 
-import "github.com/theQRL/assertoor/pkg/coordinator/buildinfo"
+import "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/buildinfo"
 
 type SidebarData struct {
 	ClientCount      uint64         `json:"client_count"`

@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/logger"
-	"github.com/theQRL/assertoor/pkg/coordinator/names"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/logger"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/names"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 )
 
 type Coordinator interface {

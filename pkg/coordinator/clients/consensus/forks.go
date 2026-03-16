@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"sort"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 )
 
 type HeadFork struct {
-	Slot         phase0.Slot
-	Root         phase0.Root
+	Slot         zond.Slot
+	Root         zond.Root
 	ReadyClients []*Client
 	AllClients   []*Client
 }

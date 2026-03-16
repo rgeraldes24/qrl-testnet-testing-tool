@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 type GetTestRunResponse struct {

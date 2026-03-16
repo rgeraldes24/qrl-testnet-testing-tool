@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/vars"
 	"gopkg.in/yaml.v2"
 )
 

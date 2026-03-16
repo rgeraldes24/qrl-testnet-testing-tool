@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 )
 
 type ForkVersion struct {
@@ -15,13 +15,13 @@ type ForkVersion struct {
 
 // https://github.com/ethereum/consensus-specs/blob/dev/configs/mainnet.yaml
 type ChainSpec struct {
-	PresetBase           string         `yaml:"PRESET_BASE"`
-	ConfigName           string         `yaml:"CONFIG_NAME"`
-	MinGenesisTime       time.Time      `yaml:"MIN_GENESIS_TIME"`
-	GenesisForkVersion   phase0.Version `yaml:"GENESIS_FORK_VERSION"`
-	SecondsPerSlot       time.Duration  `yaml:"SECONDS_PER_SLOT"`
-	SlotsPerEpoch        uint64         `yaml:"SLOTS_PER_EPOCH"`
-	MaxCommitteesPerSlot uint64         `yaml:"MAX_COMMITTEES_PER_SLOT"`
+	PresetBase           string        `yaml:"PRESET_BASE"`
+	ConfigName           string        `yaml:"CONFIG_NAME"`
+	MinGenesisTime       time.Time     `yaml:"MIN_GENESIS_TIME"`
+	GenesisForkVersion   zond.Version  `yaml:"GENESIS_FORK_VERSION"`
+	SecondsPerSlot       time.Duration `yaml:"SECONDS_PER_SLOT"`
+	SlotsPerEpoch        uint64        `yaml:"SLOTS_PER_EPOCH"`
+	MaxCommitteesPerSlot uint64        `yaml:"MAX_COMMITTEES_PER_SLOT"`
 }
 
 func (chain *ChainSpec) CheckMismatch(chain2 *ChainSpec) []string {

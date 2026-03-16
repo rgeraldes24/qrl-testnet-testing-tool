@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/theQRL/assertoor/pkg/coordinator/clients"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
 )
 
 type ClientsPage struct {

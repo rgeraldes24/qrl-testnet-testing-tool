@@ -12,17 +12,17 @@ import (
 	"sync"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
 	"github.com/theQRL/go-zond/accounts/abi/bind"
 	qrlcommon "github.com/theQRL/go-zond/common"
 	qrltypes "github.com/theQRL/go-zond/core/types"
 	"github.com/theQRL/go-zond/crypto"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 	"github.com/tyler-smith/go-bip39"
 	util "github.com/wealdtech/go-eth2-util"
 )
@@ -303,7 +303,7 @@ func (t *Task) generateWithdrawal(ctx context.Context, accountIdx uint64, onConf
 			// select by validator index
 			validatorIndex := *t.config.SourceStartValidatorIndex + accountIdx
 			sourceSelector = fmt.Sprintf("(index: %v)", validatorIndex)
-			sourceValidator = validatorSet[phase0.ValidatorIndex(validatorIndex)]
+			sourceValidator = validatorSet[zond.ValidatorIndex(validatorIndex)]
 		}
 
 		if sourceValidator == nil {

@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/ztyp/tree"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 	"github.com/tyler-smith/go-bip39"
 	util "github.com/wealdtech/go-eth2-util"
 )
@@ -153,7 +153,7 @@ func (t *Task) Execute(ctx context.Context) error {
 	return nil
 }
 
-func (t *Task) loadChainState(ctx context.Context) (*phase0.Fork, error) {
+func (t *Task) loadChainState(ctx context.Context) (*zond.Fork, error) {
 	client := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool().AwaitReadyEndpoint(ctx, consensus.AnyClient)
 	if client == nil {
 		return nil, ctx.Err()
@@ -167,7 +167,7 @@ func (t *Task) loadChainState(ctx context.Context) (*phase0.Fork, error) {
 	return fork, nil
 }
 
-func (t *Task) generateVoluntaryExit(ctx context.Context, accountIdx uint64, fork *phase0.Fork) error {
+func (t *Task) generateVoluntaryExit(ctx context.Context, accountIdx uint64, fork *zond.Fork) error {
 	validatorKeyPath := fmt.Sprintf("m/12381/3600/%d/0/0", accountIdx)
 
 	validatorPrivkey, err := util.PrivateKeyFromSeedAndPath(t.withdrSeed, validatorKeyPath)
@@ -212,15 +212,15 @@ func (t *Task) generateVoluntaryExit(ctx context.Context, accountIdx uint64, for
 
 	// build voluntary exit message
 	specs := clientPool.GetConsensusPool().GetBlockCache().GetSpecs()
-	operation := &phase0.VoluntaryExit{
+	operation := &zond.VoluntaryExit{
 		ValidatorIndex: validator.Index,
 	}
 
 	if t.config.ExitEpoch >= 0 {
-		operation.Epoch = phase0.Epoch(t.config.ExitEpoch) //nolint:gosec // no overflow possible
+		operation.Epoch = zond.Epoch(t.config.ExitEpoch) //nolint:gosec // no overflow possible
 	} else {
 		currentSlot, _ := client.GetLastHead()
-		operation.Epoch = phase0.Epoch(currentSlot / phase0.Slot(specs.SlotsPerEpoch))
+		operation.Epoch = zond.Epoch(currentSlot / zond.Slot(specs.SlotsPerEpoch))
 	}
 
 	root, err := operation.HashTreeRoot()
@@ -235,14 +235,14 @@ func (t *Task) generateVoluntaryExit(ctx context.Context, accountIdx uint64, for
 		return fmt.Errorf("failed converting validator priv key: %w", err)
 	}
 
-	forkVersion = specs.CappellaForkVersion
+	forkVersion = specs.ZondForkVersion
 
 	genesis := clientPool.GetConsensusPool().GetBlockCache().GetGenesis()
 	dom := common.ComputeDomain(common.DOMAIN_VOLUNTARY_EXIT, common.Version(forkVersion), tree.Root(genesis.GenesisValidatorsRoot))
 	signingRoot := common.ComputeSigningRoot(root, dom)
 	sig := secKey.SignHash(signingRoot[:])
 
-	var signedMsg phase0.SignedVoluntaryExit
+	var signedMsg zond.SignedVoluntaryExit
 
 	signedMsg.Message = operation
 	copy(signedMsg.Signature[:], sig.Serialize())

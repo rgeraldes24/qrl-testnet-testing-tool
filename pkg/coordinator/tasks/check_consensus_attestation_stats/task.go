@@ -6,12 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
 	"github.com/theQRL/go-bitfield"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 )
 
 var (
@@ -29,7 +28,7 @@ type Task struct {
 	options         *types.TaskOptions
 	config          Config
 	logger          logrus.FieldLogger
-	attesterDutyMap map[uint64]map[phase0.Root]*attesterDuties
+	attesterDutyMap map[uint64]map[zond.Root]*attesterDuties
 	passedEpochs    uint64
 }
 
@@ -105,7 +104,7 @@ func (t *Task) Execute(ctx context.Context) error {
 
 	t.logger.Infof("current epoch: %v, starting attestation aggregation at epoch %v", lastCheckedEpoch, lastCheckedEpoch+1)
 
-	t.attesterDutyMap = map[uint64]map[phase0.Root]*attesterDuties{}
+	t.attesterDutyMap = map[uint64]map[zond.Root]*attesterDuties{}
 
 	defer func() {
 		t.attesterDutyMap = nil
@@ -162,7 +161,7 @@ func (t *Task) processBlock(ctx context.Context, block *consensus.Block) {
 	parentStateRoot := parentBlock.GetHeader().Message.StateRoot
 
 	if t.attesterDutyMap[currentBlockEpoch] == nil {
-		t.attesterDutyMap[currentBlockEpoch] = map[phase0.Root]*attesterDuties{}
+		t.attesterDutyMap[currentBlockEpoch] = map[zond.Root]*attesterDuties{}
 	} else if t.attesterDutyMap[currentBlockEpoch][parentBlock.Root] != nil {
 		return
 	}
@@ -302,9 +301,9 @@ func (t *Task) checkEpochVotes(epoch uint64, epochVote *epochVotes) bool {
 }
 
 type epochVotes struct {
-	headRoot       phase0.Root
-	dependentRoot  phase0.Root
-	targetRoot     phase0.Root
+	headRoot       zond.Root
+	dependentRoot  zond.Root
+	targetRoot     zond.Root
 	attesterDuties *attesterDuties
 	currentEpoch   struct {
 		targetVoteAmount uint64
@@ -354,11 +353,11 @@ func (t *Task) aggregateEpochVotes(ctx context.Context, epoch uint64) []*epochVo
 	firstSlot := epoch * specs.SlotsPerEpoch
 	lastSlot := firstSlot + (2 * specs.SlotsPerEpoch)
 
-	allHeads := map[phase0.Root]bool{}
-	allVotes := map[phase0.Root]*epochVotes{}
+	allHeads := map[zond.Root]bool{}
+	allVotes := map[zond.Root]*epochVotes{}
 
 	for slot := firstSlot; slot <= lastSlot; slot++ {
-		for _, block := range consensusBlockCache.GetCachedBlocksBySlot(phase0.Slot(slot)) {
+		for _, block := range consensusBlockCache.GetCachedBlocksBySlot(zond.Slot(slot)) {
 			blockBody := block.AwaitBlock(ctx, 500*time.Millisecond)
 			if blockBody == nil {
 				continue
@@ -401,7 +400,7 @@ func (t *Task) aggregateEpochVotes(ctx context.Context, epoch uint64) []*epochVo
 				continue
 			}
 
-			for attIdx, att := range attestationsVersioned {
+			for _, att := range attestationsVersioned {
 				attData, err1 := att.Data()
 				if err1 != nil {
 					continue
@@ -419,33 +418,10 @@ func (t *Task) aggregateEpochVotes(ctx context.Context, epoch uint64) []*epochVo
 				voteAmount := uint64(0)
 				voteCount := uint64(0)
 
-				if att.Version >= spec.DataVersionElectra {
-					// EIP-7549 changes the attestation aggregation
-					// there can now be attestations from all committees aggregated into a single attestation aggregate
-					committeeBits, err := att.CommitteeBits()
-					if err != nil {
-						t.logger.Debugf("aggregateEpochVotes slot %v failed, can't get committeeBits for attestation %v: %v", slot, attIdx, err)
-						continue
-					}
-
-					aggregationBitsOffset := uint64(0)
-
-					for committee := uint64(0); committee < specs.MaxCommitteesPerSlot; committee++ {
-						if !committeeBits.BitAt(committee) {
-							continue
-						}
-
-						voteAmt, voteCnt, committeeSize := t.aggregateAttestationVotes(votes, uint64(attData.Slot), committee, attAggregationBits, 0)
-						voteAmount += voteAmt
-						voteCount += voteCnt
-						aggregationBitsOffset += committeeSize
-					}
-				} else {
-					// pre electra attestation aggregation
-					voteAmt, voteCnt, _ := t.aggregateAttestationVotes(votes, uint64(attData.Slot), uint64(attData.Index), attAggregationBits, 0)
-					voteAmount += voteAmt
-					voteCount += voteCnt
-				}
+				// pre electra attestation aggregation
+				voteAmt, voteCnt, _ := t.aggregateAttestationVotes(votes, uint64(attData.Slot), uint64(attData.Index), attAggregationBits, 0)
+				voteAmount += voteAmt
+				voteCount += voteCnt
 
 				if bytes.Equal(attData.Target.Root[:], votes.targetRoot[:]) {
 					if isNextEpoch {

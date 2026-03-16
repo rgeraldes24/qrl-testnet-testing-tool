@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/helper"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/helper"
 )
 
 type TestStatus string

@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
 )
 
@@ -69,8 +69,8 @@ func (pool *Pool) GetBlockCache() *BlockCache {
 	return pool.blockCache
 }
 
-func (pool *Pool) GetValidatorSet() map[phase0.ValidatorIndex]*v1.Validator {
-	return pool.blockCache.getCachedValidatorSet(func() map[phase0.ValidatorIndex]*v1.Validator {
+func (pool *Pool) GetValidatorSet() map[zond.ValidatorIndex]*v1.Validator {
+	return pool.blockCache.getCachedValidatorSet(func() map[zond.ValidatorIndex]*v1.Validator {
 		client := pool.GetReadyEndpoint(AnyClient)
 		if client == nil {
 			pool.logger.Errorf("could not load validator set: no ready client")

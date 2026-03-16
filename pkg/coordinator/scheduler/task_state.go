@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
-	"github.com/theQRL/assertoor/pkg/coordinator/logger"
-	"github.com/theQRL/assertoor/pkg/coordinator/tasks"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/vars"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/logger"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/tasks"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/vars"
 	"gopkg.in/yaml.v3"
 )
 

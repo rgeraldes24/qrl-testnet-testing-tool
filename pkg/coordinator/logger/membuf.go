@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/db"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/db"
 	"gopkg.in/yaml.v3"
 )
 

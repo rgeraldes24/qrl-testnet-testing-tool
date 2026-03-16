@@ -10,14 +10,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger"
-	coordinator_types "github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/web/api"
-	"github.com/theQRL/assertoor/pkg/coordinator/web/handlers"
-	"github.com/theQRL/assertoor/pkg/coordinator/web/types"
+	coordinator_types "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/web/api"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/web/handlers"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/web/types"
 	"github.com/urfave/negroni"
 
 	// import swagger docs
-	_ "github.com/theQRL/assertoor/pkg/coordinator/web/api/docs"
+	_ "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/web/api/docs"
 
 	// import pprof
 	//nolint:gosec // ignore

@@ -8,11 +8,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/vars"
 	"github.com/theQRL/go-zond/common"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/vars"
 )
 
 var (
@@ -137,7 +137,7 @@ func (t *Task) runValidatorStatusCheck() bool {
 	}
 
 	for {
-		validator := validatorSet[phase0.ValidatorIndex(currentIndex)]
+		validator := validatorSet[zond.ValidatorIndex(currentIndex)]
 		if validator == nil {
 			break
 		}
@@ -204,12 +204,12 @@ func (t *Task) runValidatorStatusCheck() bool {
 			}
 		}
 
-		if t.config.MinValidatorBalance > 0 && validator.Balance < phase0.Shor(t.config.MinValidatorBalance) {
+		if t.config.MinValidatorBalance > 0 && validator.Balance < zond.Shor(t.config.MinValidatorBalance) {
 			t.logger.Infof("check failed: validator balance below minimum: %v", validator.Balance)
 			continue
 		}
 
-		if t.config.MaxValidatorBalance != nil && validator.Balance > phase0.Shor(*t.config.MaxValidatorBalance) {
+		if t.config.MaxValidatorBalance != nil && validator.Balance > zond.Shor(*t.config.MaxValidatorBalance) {
 			t.logger.Infof("check failed: validator balance above maximum: %v", validator.Balance)
 			continue
 		}

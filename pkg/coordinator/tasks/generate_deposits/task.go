@@ -12,25 +12,25 @@ import (
 	"sync"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/zrnt/eth2/util/hashing"
 	"github.com/protolambda/ztyp/tree"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/execution"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
-	"github.com/theQRL/assertoor/pkg/coordinator/wallet"
 	"github.com/theQRL/go-zond/accounts/abi/bind"
 	qrlcommon "github.com/theQRL/go-zond/common"
 	ethtypes "github.com/theQRL/go-zond/core/types"
 	"github.com/theQRL/go-zond/crypto"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/execution"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/wallet"
 	"github.com/tyler-smith/go-bip39"
 	e2types "github.com/wealdtech/go-eth2-types/v2"
 	util "github.com/wealdtech/go-eth2-util"
 
-	depositcontract "github.com/theQRL/assertoor/pkg/coordinator/tasks/generate_deposits/deposit_contract"
+	depositcontract "github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/tasks/generate_deposits/deposit_contract"
 )
 
 var (

@@ -9,15 +9,15 @@ import (
 	"strings"
 	"time"
 
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/protolambda/zrnt/eth2/beacon/common"
 	"github.com/protolambda/ztyp/tree"
+	v1 "github.com/rgeraldes24/go-qrl-beacon-client/api/v1"
+	"github.com/rgeraldes24/go-qrl-beacon-client/spec/zond"
 	"github.com/sirupsen/logrus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus"
-	"github.com/theQRL/assertoor/pkg/coordinator/clients/consensus/rpc"
-	"github.com/theQRL/assertoor/pkg/coordinator/types"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/clients/consensus/rpc"
+	"github.com/theQRL/qrl-testnet-testing-tool/pkg/coordinator/types"
 	"github.com/tyler-smith/go-bip39"
 	e2types "github.com/wealdtech/go-eth2-types/v2"
 	util "github.com/wealdtech/go-eth2-util"
@@ -40,7 +40,7 @@ type Task struct {
 	logger  logrus.FieldLogger
 
 	valSeed       []byte
-	validatorKeys map[phase0.ValidatorIndex]*validatorKey
+	validatorKeys map[zond.ValidatorIndex]*validatorKey
 
 	// Cache for committee duties per epoch
 	dutiesCache map[uint64][]*v1.BeaconCommittee
@@ -224,7 +224,7 @@ func (t *Task) Execute(ctx context.Context) error {
 }
 
 func (t *Task) initValidatorKeys() error {
-	t.validatorKeys = make(map[phase0.ValidatorIndex]*validatorKey)
+	t.validatorKeys = make(map[zond.ValidatorIndex]*validatorKey)
 
 	validators := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool().GetValidatorSet()
 	if validators == nil {
@@ -307,7 +307,7 @@ func (t *Task) processSlot(ctx context.Context, slot, startEpoch uint64) (int, e
 	}
 
 	// Group duties by committee index
-	committeeGroups := make(map[phase0.CommitteeIndex][]*validatorDuty)
+	committeeGroups := make(map[zond.CommitteeIndex][]*validatorDuty)
 	for _, duty := range slotDuties {
 		committeeGroups[duty.committeeIndex] = append(committeeGroups[duty.committeeIndex], duty)
 	}
@@ -345,7 +345,7 @@ func (t *Task) processSlotForEpoch(ctx context.Context, slot, epoch uint64) (int
 	}
 
 	// Group duties by committee index
-	committeeGroups := make(map[phase0.CommitteeIndex][]*validatorDuty)
+	committeeGroups := make(map[zond.CommitteeIndex][]*validatorDuty)
 	for _, duty := range slotDuties {
 		committeeGroups[duty.committeeIndex] = append(committeeGroups[duty.committeeIndex], duty)
 	}
@@ -367,8 +367,8 @@ func (t *Task) processSlotForEpoch(ctx context.Context, slot, epoch uint64) (int
 }
 
 type validatorDuty struct {
-	validatorIndex      phase0.ValidatorIndex
-	committeeIndex      phase0.CommitteeIndex
+	validatorIndex      zond.ValidatorIndex
+	committeeIndex      zond.CommitteeIndex
 	committeeLength     uint64
 	positionInCommittee uint64
 }
@@ -430,7 +430,7 @@ func (t *Task) getCommitteeDuties(ctx context.Context, epoch uint64) ([]*v1.Beac
 	return duties, nil
 }
 
-func (t *Task) generateAndSubmitAttestation(ctx context.Context, slot uint64, committeeIdx phase0.CommitteeIndex, duties []*validatorDuty) (int, error) {
+func (t *Task) generateAndSubmitAttestation(ctx context.Context, slot uint64, committeeIdx zond.CommitteeIndex, duties []*validatorDuty) (int, error) {
 	clients := t.getClients()
 	if len(clients) == 0 {
 		return 0, fmt.Errorf("no client available")
@@ -441,7 +441,7 @@ func (t *Task) generateAndSubmitAttestation(ctx context.Context, slot uint64, co
 	genesis := consensusPool.GetBlockCache().GetGenesis()
 
 	// Get attestation data from beacon node, retry with different clients if needed
-	var attData *phase0.AttestationData
+	var attData *zond.AttestationData
 
 	var lastErr error
 
@@ -503,7 +503,7 @@ func (t *Task) generateAndSubmitAttestation(ctx context.Context, slot uint64, co
 
 	var currentClusterOffset int
 
-	var clusterAttData *phase0.AttestationData
+	var clusterAttData *zond.AttestationData
 
 	attestationCount := 0
 
@@ -573,7 +573,7 @@ func (t *Task) generateAndSubmitAttestation(ctx context.Context, slot uint64, co
 // Positive offset goes back (older blocks), negative goes forward.
 // If the offset would result in a head before the target epoch, the head is clamped
 // to the target epoch's first slot (using the target root).
-func (t *Task) applyLateHead(attData *phase0.AttestationData, offset int) *phase0.AttestationData {
+func (t *Task) applyLateHead(attData *zond.AttestationData, offset int) *zond.AttestationData {
 	consensusPool := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool()
 	specs := consensusPool.GetBlockCache().GetSpecs()
 
@@ -590,15 +590,15 @@ func (t *Task) applyLateHead(attData *phase0.AttestationData, offset int) *phase
 		newSlot = targetEpochFirstSlot
 	}
 
-	modifiedData := &phase0.AttestationData{
+	modifiedData := &zond.AttestationData{
 		Slot:            attData.Slot,
 		Index:           attData.Index,
 		BeaconBlockRoot: newRoot,
-		Source: &phase0.Checkpoint{
+		Source: &zond.Checkpoint{
 			Epoch: attData.Source.Epoch,
 			Root:  attData.Source.Root,
 		},
-		Target: &phase0.Checkpoint{
+		Target: &zond.Checkpoint{
 			Epoch: attData.Target.Epoch,
 			Root:  attData.Target.Root,
 		},
@@ -612,7 +612,7 @@ func (t *Task) applyLateHead(attData *phase0.AttestationData, offset int) *phase
 // walkBlocks walks N blocks from the given root.
 // Positive steps go backwards (using parentRoot), negative steps go forward (finding child blocks).
 // Returns the resulting root and slot. Always returns a valid slot from the last known block.
-func (t *Task) walkBlocks(startRoot phase0.Root, startSlot uint64, steps int) (resultRoot phase0.Root, resultSlot uint64) {
+func (t *Task) walkBlocks(startRoot zond.Root, startSlot uint64, steps int) (resultRoot zond.Root, resultSlot uint64) {
 	if steps > 0 {
 		return t.walkBackBlocks(startRoot, startSlot, steps)
 	} else if steps < 0 {
@@ -632,7 +632,7 @@ func (t *Task) walkBlocks(startRoot phase0.Root, startSlot uint64, steps int) (r
 }
 
 // walkBackBlocks walks back N blocks from the given root using parentRoot.
-func (t *Task) walkBackBlocks(startRoot phase0.Root, startSlot uint64, steps int) (resultRoot phase0.Root, resultSlot uint64) {
+func (t *Task) walkBackBlocks(startRoot zond.Root, startSlot uint64, steps int) (resultRoot zond.Root, resultSlot uint64) {
 	consensusPool := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool()
 	blockCache := consensusPool.GetBlockCache()
 
@@ -670,7 +670,7 @@ func (t *Task) walkBackBlocks(startRoot phase0.Root, startSlot uint64, steps int
 }
 
 // walkForwardBlocks walks forward N blocks from the given root by finding child blocks.
-func (t *Task) walkForwardBlocks(startRoot phase0.Root, startSlot uint64, steps int) (resultRoot phase0.Root, resultSlot uint64) {
+func (t *Task) walkForwardBlocks(startRoot zond.Root, startSlot uint64, steps int) (resultRoot zond.Root, resultSlot uint64) {
 	consensusPool := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool()
 	blockCache := consensusPool.GetBlockCache()
 
@@ -698,7 +698,7 @@ func (t *Task) walkForwardBlocks(startRoot phase0.Root, startSlot uint64, steps 
 }
 
 // findChildBlock finds a cached block whose parent is the given root.
-func (t *Task) findChildBlock(parentRoot phase0.Root) *consensus.Block {
+func (t *Task) findChildBlock(parentRoot zond.Root) *consensus.Block {
 	consensusPool := t.ctx.Scheduler.GetServices().ClientPool().GetConsensusPool()
 	blockCache := consensusPool.GetBlockCache()
 
@@ -711,7 +711,7 @@ func (t *Task) findChildBlock(parentRoot phase0.Root) *consensus.Block {
 	// Search in slots after the parent
 	parentSlot := uint64(parentBlock.Slot)
 	for searchSlot := parentSlot + 1; searchSlot <= parentSlot+32; searchSlot++ {
-		blocks := blockCache.GetCachedBlocksBySlot(phase0.Slot(searchSlot))
+		blocks := blockCache.GetCachedBlocksBySlot(zond.Slot(searchSlot))
 		for _, block := range blocks {
 			blockParent := block.GetParentRoot()
 			if blockParent != nil && *blockParent == parentRoot {
